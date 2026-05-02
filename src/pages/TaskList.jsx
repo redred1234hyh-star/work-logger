@@ -1,3 +1,48 @@
+import { useState } from 'react'
+import { useTasks } from '../hooks/useTasks'
+import FilterTable from '../components/tasks/FilterTable'
+import BrandGroups from '../components/tasks/BrandGroups'
+import KanbanBoard from '../components/tasks/KanbanBoard'
+import LoadingSpinner from '../components/LoadingSpinner'
+
+const VIEWS = [
+  { id: 'table', label: '📊 表格' },
+  { id: 'groups', label: '🏷 品牌分組' },
+  { id: 'kanban', label: '📌 Kanban' },
+]
+
 export default function TaskList() {
-  return <div className="py-8 text-gray-400 text-sm">任務列表 — coming soon</div>
+  const { tasks, loading, error, updateTask } = useTasks()
+  const [view, setView] = useState('table')
+
+  return (
+    <div className="space-y-4 py-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <h1 className="text-lg font-semibold text-gray-800">📋 任務列表</h1>
+        <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+          {VIEWS.map((v) => (
+            <button
+              key={v.id}
+              onClick={() => setView(v.id)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                view === v.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {v.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading && <LoadingSpinner text="載入任務中..." />}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {!loading && !error && (
+        <>
+          {view === 'table' && <FilterTable tasks={tasks} onUpdateTask={updateTask} />}
+          {view === 'groups' && <BrandGroups tasks={tasks} onUpdateTask={updateTask} />}
+          {view === 'kanban' && <KanbanBoard tasks={tasks} onUpdateTask={updateTask} />}
+        </>
+      )}
+    </div>
+  )
 }
