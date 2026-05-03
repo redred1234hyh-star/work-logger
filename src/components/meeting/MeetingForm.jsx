@@ -59,7 +59,7 @@ export default function MeetingForm({ onSubmit, loading }) {
           disabled={!notes.trim()}
           className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
-          ✨ AI 解析並儲存
+          ✨ Save
         </button>
       )}
     </form>
