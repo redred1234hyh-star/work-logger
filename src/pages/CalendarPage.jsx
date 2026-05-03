@@ -40,7 +40,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
   const [dragOverConfirmed, setDragOverConfirmed] = useState(false)
   const [dragOverPending, setDragOverPending] = useState(false)
 
-  const pendingTasks = tasks.filter((t) => !t.deadline || t.deadline === '')
+  const pendingTasks = tasks.filter((t) => (!t.deadline || t.deadline === '') && t.status !== '已確定')
   const confirmedTasks = tasks
     .filter((t) => t.status === '已確定')
     .sort((a, b) => (a.deadline ?? '9999') > (b.deadline ?? '9999') ? 1 : -1)
