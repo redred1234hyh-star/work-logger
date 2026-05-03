@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import { sheetsApi } from '../api/sheets'
 
+const fmtDate = (v) => {
+  if (!v) return ''
+  if (typeof v === 'string') return v.split('T')[0]
+  try { return new Date(v).toISOString().split('T')[0] } catch { return '' }
+}
+
+const normalizeDates = (t) => ({
+  ...t,
+  deadline: fmtDate(t.deadline),
+  meeting_date: fmtDate(t.meeting_date),
+})
+
 export function useTasks() {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
@@ -10,7 +22,7 @@ export function useTasks() {
     setLoading(true)
     try {
       const { tasks: data } = await sheetsApi.getTasks()
-      setTasks(data ?? [])
+      setTasks((data ?? []).map(normalizeDates))
     } catch (e) {
       setError(e.message)
     } finally {

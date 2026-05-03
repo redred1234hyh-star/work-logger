@@ -31,7 +31,6 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
     const ds = dateStr(d)
     return {
       deadlines: tasks.filter((t) => t.deadline === ds),
-      meetingTasks: tasks.filter((t) => t.meeting_date?.startsWith(ds) && t.deadline && t.deadline !== ds),
       mtgs: (meetings ?? []).filter((m) => m.date === ds),
     }
   }
@@ -67,8 +66,8 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const d = i + 1
           const ds = dateStr(d)
-          const { deadlines, meetingTasks, mtgs } = getEvents(d)
-          const hasEvents = deadlines.length + meetingTasks.length + mtgs.length > 0
+          const { deadlines, mtgs } = getEvents(d)
+          const hasEvents = deadlines.length + mtgs.length > 0
           const isToday = ds === todayStr
           const isDragOver = dragOver === ds
 
@@ -99,14 +98,6 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
                     </div>
                   )
                 })}
-                {meetingTasks.map((t, idx) => {
-                  const brand = getBrand(t.brand)
-                  return (
-                    <div key={idx} className={`text-[10px] rounded px-1 truncate opacity-70 ${brand.bg} ${brand.text}`}>
-                      {t.content}
-                    </div>
-                  )
-                })}
               </div>
 
               {popover === ds && (
@@ -117,7 +108,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
                   <p className="font-semibold text-gray-700">{ds}</p>
                   {mtgs.map((m, idx) => (
                     <div key={idx} className="bg-purple-50 rounded-lg p-2">
-                      <p className="font-medium text-purple-700">📋 {m.meeting_name}</p>
+                      <p className="font-medium text-purple-700">📋 {m.meeting_name || '會議'}</p>
                     </div>
                   ))}
                   {deadlines.map((t, idx) => {
@@ -125,16 +116,6 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
                     return (
                       <div key={idx} className={`rounded-lg p-2 ${brand.bg}`}>
                         <p className={`font-semibold ${brand.text}`}>⏰ {brand.label} deadline</p>
-                        <p className="text-gray-700 mt-0.5">{t.content}</p>
-                        {t.future_direction && <p className="text-gray-400 mt-0.5">→ {t.future_direction}</p>}
-                      </div>
-                    )
-                  })}
-                  {meetingTasks.map((t, idx) => {
-                    const brand = getBrand(t.brand)
-                    return (
-                      <div key={idx} className={`rounded-lg p-2 ${brand.bg}`}>
-                        <p className={`font-semibold ${brand.text}`}>{brand.label}</p>
                         <p className="text-gray-700 mt-0.5">{t.content}</p>
                         {t.future_direction && <p className="text-gray-400 mt-0.5">→ {t.future_direction}</p>}
                       </div>
