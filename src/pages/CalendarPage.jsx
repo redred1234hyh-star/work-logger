@@ -2,6 +2,7 @@ import { useState } from 'react'
 import MonthCalendar from '../components/calendar/MonthCalendar'
 import Timeline from '../components/calendar/Timeline'
 import LoadingSpinner from '../components/LoadingSpinner'
+import BrandTag from '../components/BrandTag'
 import { getBrand } from '../config/brands'
 
 const VIEWS = [
@@ -37,6 +38,9 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
   const [view, setView] = useState(() => window.innerWidth < 768 ? 'timeline' : 'month')
 
   const pendingTasks = tasks.filter((t) => !t.deadline || t.deadline === '')
+  const confirmedTasks = tasks
+    .filter((t) => t.status === '已確定')
+    .sort((a, b) => (a.deadline ?? '9999') > (b.deadline ?? '9999') ? 1 : -1)
 
   const handleDropTask = async (task_id, dateStr) => {
     await updateTask(task_id, { deadline: dateStr })
@@ -69,6 +73,34 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
         <>
           {view === 'month' && <MonthCalendar tasks={tasks} meetings={meetings} onDropTask={handleDropTask} onUpdateTask={updateTask} onDeleteTask={deleteTask} onDeleteMeeting={deleteMeeting} />}
           {view === 'timeline' && <Timeline tasks={tasks} meetings={meetings} />}
+
+          {confirmedTasks.length > 0 && (
+            <div className="mt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <h2 className="text-sm font-semibold text-gray-700">本月確定事項</h2>
+                <span className="text-xs text-gray-400">({confirmedTasks.length})</span>
+              </div>
+              <div className="bg-white rounded-xl border border-emerald-200 divide-y divide-emerald-50">
+                {confirmedTasks.map((task) => {
+                  const brand = getBrand(task.brand)
+                  return (
+                    <div key={task.task_id} className="flex items-start gap-3 px-4 py-2.5">
+                      <BrandTag brandId={task.brand} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-gray-700">{task.content}</p>
+                        {task.future_direction && (
+                          <p className="text-xs text-gray-400 mt-0.5">→ {task.future_direction}</p>
+                        )}
+                      </div>
+                      {task.deadline && (
+                        <span className="text-xs text-emerald-600 font-medium shrink-0">{task.deadline}</span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
 
           {pendingTasks.length > 0 && (
             <div className="mt-4">

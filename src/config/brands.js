@@ -85,4 +85,4 @@ export function extractBrandFromText(text) {
     .map((b) => b.id)
 }
 
-export const STATUS_OPTIONS = ['待開始', '進行中', '待審批', '已完成']
+export const STATUS_OPTIONS = ['待開始', '已確定', '進行中', '待審批', '已完成']
