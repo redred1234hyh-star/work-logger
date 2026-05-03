@@ -13,12 +13,19 @@ function getFirstDayMon(year, month) {
 const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
 const DAYS = ['一','二','三','四','五','六','日']
 
-export default function MonthCalendar({ tasks, meetings, onDropTask }) {
+const fmtDate = (v) => {
+  if (!v) return ''
+  if (typeof v === 'string') return v.split('T')[0]
+  try { return new Date(v).toISOString().split('T')[0] } catch { return '' }
+}
+
+export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTask }) {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
   const [popover, setPopover] = useState(null)
   const [dragOver, setDragOver] = useState(null)
+  const [editingTask, setEditingTask] = useState(null)
 
   const todayStr = now.toISOString().split('T')[0]
   const daysInMonth = getDaysInMonth(year, month)
@@ -31,7 +38,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
     const ds = dateStr(d)
     return {
       deadlines: tasks.filter((t) => t.deadline === ds),
-      mtgs: (meetings ?? []).filter((m) => m.date === ds),
+      mtgs: (meetings ?? []).filter((m) => fmtDate(m.date) === ds),
     }
   }
 
@@ -45,8 +52,14 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
     if (task_id && onDropTask) onDropTask(task_id, ds)
   }
 
+  const saveEdit = (task_id) => {
+    if (!editingTask || editingTask.task_id !== task_id) return
+    onUpdateTask?.(task_id, { content: editingTask.content })
+    setEditingTask(null)
+  }
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 select-none" onClick={() => setPopover(null)}>
+    <div className="bg-white rounded-xl border border-gray-200 p-4 select-none" onClick={() => { setPopover(null); setEditingTask(null) }}>
       <div className="flex items-center justify-between mb-4">
         <button onClick={prev} className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full text-gray-500">‹</button>
         <span className="font-semibold text-gray-800">{year}年 {MONTHS[month]}</span>
@@ -74,7 +87,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
           return (
             <div
               key={d}
-              onClick={(e) => { e.stopPropagation(); if (hasEvents) setPopover(popover === ds ? null : ds) }}
+              onClick={(e) => { e.stopPropagation(); setEditingTask(null); if (hasEvents) setPopover(popover === ds ? null : ds) }}
               onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(ds) }}
               onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDragOver(null) }}
               onDrop={(e) => handleDrop(e, ds)}
@@ -94,7 +107,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
                   const brand = getBrand(t.brand)
                   return (
                     <div key={idx} className={`text-[10px] rounded px-1 truncate ${brand.bg} ${brand.text}`}>
-                      ⏰ {t.content}
+                      {brand.shortcode} - {t.content}
                     </div>
                   )
                 })}
@@ -102,7 +115,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
 
               {popover === ds && (
                 <div
-                  className="absolute top-full left-0 z-20 bg-white border border-gray-200 rounded-xl shadow-xl p-3 w-64 space-y-2 text-xs max-h-72 overflow-y-auto"
+                  className="absolute top-full left-0 z-20 bg-white border border-gray-200 rounded-xl shadow-xl p-3 w-72 space-y-2 text-xs max-h-72 overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className="font-semibold text-gray-700">{ds}</p>
@@ -113,10 +126,34 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
                   ))}
                   {deadlines.map((t, idx) => {
                     const brand = getBrand(t.brand)
+                    const isEditing = editingTask?.task_id === t.task_id
                     return (
                       <div key={idx} className={`rounded-lg p-2 ${brand.bg}`}>
-                        <p className={`font-semibold ${brand.text}`}>⏰ {brand.label} deadline</p>
-                        <p className="text-gray-700 mt-0.5">{t.content}</p>
+                        <p className={`font-semibold text-[10px] ${brand.text}`}>{brand.label} deadline</p>
+                        {isEditing ? (
+                          <div className="flex items-center gap-1 mt-1">
+                            <input
+                              autoFocus
+                              className="flex-1 text-xs border border-gray-300 rounded px-1.5 py-0.5 bg-white text-gray-800 focus:outline-none focus:border-indigo-400"
+                              value={editingTask.content}
+                              onChange={(e) => setEditingTask((prev) => ({ ...prev, content: e.target.value }))}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') saveEdit(t.task_id)
+                                if (e.key === 'Escape') setEditingTask(null)
+                              }}
+                            />
+                            <button onClick={() => saveEdit(t.task_id)} className="text-green-600 hover:text-green-700 font-bold">✓</button>
+                            <button onClick={() => setEditingTask(null)} className="text-gray-400 hover:text-gray-600">✗</button>
+                          </div>
+                        ) : (
+                          <div className="flex items-start justify-between gap-1 mt-0.5">
+                            <p className="text-gray-700 flex-1">{t.content}</p>
+                            <button
+                              onClick={() => setEditingTask({ task_id: t.task_id, content: t.content })}
+                              className="text-gray-300 hover:text-indigo-500 transition-colors shrink-0"
+                            >✏️</button>
+                          </div>
+                        )}
                         {t.future_direction && <p className="text-gray-400 mt-0.5">→ {t.future_direction}</p>}
                       </div>
                     )

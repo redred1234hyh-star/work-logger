@@ -67,7 +67,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
       {loading && <LoadingSpinner text="載入中..." />}
       {!loading && (
         <>
-          {view === 'month' && <MonthCalendar tasks={tasks} meetings={meetings} onDropTask={handleDropTask} />}
+          {view === 'month' && <MonthCalendar tasks={tasks} meetings={meetings} onDropTask={handleDropTask} onUpdateTask={updateTask} />}
           {view === 'timeline' && <Timeline tasks={tasks} meetings={meetings} />}
 
           {pendingTasks.length > 0 && (

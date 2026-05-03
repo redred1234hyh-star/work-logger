@@ -2,6 +2,7 @@ export const BRANDS = [
   {
     id: 'InLife',
     label: 'InLife',
+    shortcode: 'IL',
     keywords: ['IL', 'InLife'],
     bg: 'bg-orange-50',
     text: 'text-orange-700',
@@ -10,6 +11,7 @@ export const BRANDS = [
   {
     id: 'Minus Plus',
     label: 'Minus Plus',
+    shortcode: 'MP',
     keywords: ['M+', 'MP'],
     bg: 'bg-pink-50',
     text: 'text-pink-700',
@@ -18,6 +20,7 @@ export const BRANDS = [
   {
     id: 'Miris Spa',
     label: 'Miris Spa',
+    shortcode: 'MS',
     keywords: ['MS'],
     bg: 'bg-amber-50',
     text: 'text-amber-900',
@@ -26,6 +29,7 @@ export const BRANDS = [
   {
     id: 'Miris Mama',
     label: 'Miris Mama',
+    shortcode: 'MM',
     keywords: ['MM'],
     bg: 'bg-rose-50',
     text: 'text-rose-600',
@@ -34,6 +38,7 @@ export const BRANDS = [
   {
     id: 'Consguard',
     label: 'Consguard',
+    shortcode: 'CG',
     keywords: ['Consguard', 'CG'],
     bg: 'bg-slate-50',
     text: 'text-slate-600',
@@ -42,6 +47,7 @@ export const BRANDS = [
   {
     id: 'Multi Plus',
     label: 'Multi Plus',
+    shortcode: 'MT',
     keywords: ['MT', 'Multi+', 'MTP'],
     bg: 'bg-gray-900',
     text: 'text-white',
@@ -51,6 +57,7 @@ export const BRANDS = [
   {
     id: 'General',
     label: '其他',
+    shortcode: 'Other',
     keywords: [],
     bg: 'bg-gray-100',
     text: 'text-gray-600',
