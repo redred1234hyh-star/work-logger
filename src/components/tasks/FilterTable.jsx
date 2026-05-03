@@ -3,6 +3,7 @@ import BrandTag from '../BrandTag'
 import StatusSelect from './StatusSelect'
 import TaskEditModal from './TaskEditModal'
 import { BRANDS, STATUS_OPTIONS } from '../../config/brands'
+import { Pencil, Trash2, X, Sparkles } from 'lucide-react'
 
 export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
   const [activeBrand, setActiveBrand] = useState('All')
@@ -120,9 +121,9 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                 <button onClick={() => setBulkConfirmDelete(false)} className="text-xs text-gray-400 hover:text-gray-600">取消</button>
               </>
             ) : (
-              <button onClick={handleBulkDelete} className="text-xs text-red-400 hover:text-red-600 transition-colors">🗑 刪除所選</button>
+              <button onClick={handleBulkDelete} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"><Trash2 size={12} /> 刪除所選</button>
             )}
-            <button onClick={() => { setSelected(new Set()); setBulkConfirmDelete(false) }} className="text-xs text-gray-400 hover:text-gray-600 ml-1">✕ 取消選擇</button>
+            <button onClick={() => { setSelected(new Set()); setBulkConfirmDelete(false) }} className="flex items-center gap-0.5 text-xs text-gray-400 hover:text-gray-600 ml-1"><X size={12} /> 取消選擇</button>
           </div>
         </div>
       )}
@@ -205,9 +206,9 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setEditingTask(task)}
-                      className="text-gray-300 hover:text-pink-400 transition-colors text-base"
+                      className="text-gray-300 hover:text-pink-400 transition-colors p-1"
                       title="編輯"
-                    >✏️</button>
+                    ><Pencil size={13} /></button>
                     {confirmDelete === task.task_id ? (
                       <span className="flex items-center gap-1">
                         <button onClick={() => handleDelete(task.task_id)} className="text-[10px] text-red-500 hover:text-red-700 font-medium">確認</button>
@@ -216,9 +217,9 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                     ) : (
                       <button
                         onClick={() => handleDelete(task.task_id)}
-                        className="text-gray-300 hover:text-red-400 transition-colors text-sm"
+                        className="text-gray-300 hover:text-red-400 transition-colors p-1"
                         title="刪除"
-                      >🗑</button>
+                      ><Trash2 size={13} /></button>
                     )}
                   </div>
                 </td>

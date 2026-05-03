@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { getBrand } from '../../config/brands'
+import { CalendarCheck, Pencil, Trash2, Check, X } from 'lucide-react'
 
 function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate()
@@ -100,8 +101,8 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
               <span className={`text-xs font-medium ${isToday ? 'text-pink-500' : 'text-gray-700'}`}>{d}</span>
               <div className="space-y-0.5 mt-0.5">
                 {mtgs.map((m, idx) => (
-                  <div key={idx} className="text-[10px] bg-purple-100 text-purple-700 rounded px-1 truncate">
-                    📋 {m.meeting_name || '會議'}
+                  <div key={idx} className="text-[10px] bg-purple-100 text-purple-700 rounded px-1 truncate flex items-center gap-0.5">
+                    <CalendarCheck size={9} className="shrink-0" /> {m.meeting_name || '會議'}
                   </div>
                 ))}
                 {deadlines.map((t, idx) => {
@@ -134,14 +135,14 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                     const isConfirming = confirmDelete?.type === 'meeting' && confirmDelete.id === mid
                     return (
                       <div key={idx} className="bg-purple-50 rounded-lg p-2 flex items-center justify-between gap-1">
-                        <p className="font-medium text-purple-700 flex-1">📋 {m.meeting_name || '會議'}</p>
+                        <p className="font-medium text-purple-700 flex-1 flex items-center gap-1"><CalendarCheck size={11} />{m.meeting_name || '會議'}</p>
                         {isConfirming ? (
                           <span className="flex items-center gap-1 shrink-0">
                             <button onClick={() => { onDeleteMeeting?.(mid); setConfirmDelete(null) }} className="text-[10px] text-red-500 hover:text-red-700 font-medium">確認</button>
                             <button onClick={() => setConfirmDelete(null)} className="text-[10px] text-gray-400 hover:text-gray-600">取消</button>
                           </span>
                         ) : (
-                          <button onClick={() => setConfirmDelete({ type: 'meeting', id: mid })} className="text-gray-300 hover:text-red-400 shrink-0 text-sm">🗑</button>
+                          <button onClick={() => setConfirmDelete({ type: 'meeting', id: mid })} className="text-gray-300 hover:text-red-400 shrink-0 p-0.5"><Trash2 size={12} /></button>
                         )}
                       </div>
                     )
@@ -160,7 +161,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                               <button onClick={() => setConfirmDelete(null)} className="text-[10px] text-gray-400 hover:text-gray-600">取消</button>
                             </span>
                           ) : (
-                            <button onClick={() => setConfirmDelete({ type: 'task', id: t.task_id })} className="text-gray-300 hover:text-red-400 shrink-0 text-sm">🗑</button>
+                            <button onClick={() => setConfirmDelete({ type: 'task', id: t.task_id })} className="text-gray-300 hover:text-red-400 shrink-0 p-0.5"><Trash2 size={12} /></button>
                           )}
                         </div>
                         {isEditing ? (
@@ -175,16 +176,16 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                                 if (e.key === 'Escape') setEditingTask(null)
                               }}
                             />
-                            <button onClick={() => saveEdit(t.task_id)} className="text-green-600 hover:text-green-700 font-bold">✓</button>
-                            <button onClick={() => setEditingTask(null)} className="text-gray-400 hover:text-gray-600">✗</button>
+                            <button onClick={() => saveEdit(t.task_id)} className="text-green-600 hover:text-green-700 p-0.5"><Check size={13} /></button>
+                            <button onClick={() => setEditingTask(null)} className="text-gray-400 hover:text-gray-600 p-0.5"><X size={13} /></button>
                           </div>
                         ) : (
                           <div className="flex items-start justify-between gap-1 mt-0.5">
                             <p className="text-gray-700 flex-1">{t.content}</p>
                             <button
                               onClick={() => { setConfirmDelete(null); setEditingTask({ task_id: t.task_id, content: t.content }) }}
-                              className="text-gray-300 hover:text-pink-400 transition-colors shrink-0"
-                            >✏️</button>
+                              className="text-gray-300 hover:text-pink-400 transition-colors shrink-0 p-0.5"
+                            ><Pencil size={12} /></button>
                           </div>
                         )}
                         {t.future_direction && <p className="text-gray-400 mt-0.5">→ {t.future_direction}</p>}

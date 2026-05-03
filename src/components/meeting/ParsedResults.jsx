@@ -1,12 +1,13 @@
 import BrandTag from '../BrandTag'
 import LoadingSpinner from '../LoadingSpinner'
+import { Sparkles, CalendarDays, Check } from 'lucide-react'
 
 export default function ParsedResults({ tasks, meetingMeta, onConfirm, onCancel, saving }) {
   return (
     <div className="border border-pink-100 rounded-xl bg-pink-50 p-4 space-y-3">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h3 className="text-sm font-semibold text-indigo-800">
-          ✨ AI 解析結果 — {tasks.length} 個項目
+        <h3 className="text-sm font-semibold text-pink-700 flex items-center gap-1.5">
+          <Sparkles size={14} /> AI 解析結果 — {tasks.length} 個項目
         </h3>
         <span className="text-xs text-gray-500">
           {meetingMeta?.meeting_name} · {meetingMeta?.date}
@@ -19,7 +20,7 @@ export default function ParsedResults({ tasks, meetingMeta, onConfirm, onCancel,
             <div className="flex items-center gap-2">
               <BrandTag brandId={task.brand} />
               {task.deadline && (
-                <span className="text-xs text-red-500 ml-auto">📅 {task.deadline}</span>
+                <span className="text-xs text-pink-500 ml-auto flex items-center gap-1"><CalendarDays size={11} />{task.deadline}</span>
               )}
             </div>
             <p className="text-sm text-gray-800">{task.content}</p>
@@ -36,13 +37,13 @@ export default function ParsedResults({ tasks, meetingMeta, onConfirm, onCancel,
         <div className="flex gap-2 pt-1">
           <button
             onClick={onConfirm}
-            className="bg-pink-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition-colors"
+            className="flex items-center gap-1.5 bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-pink-600 transition-colors shadow-sm"
           >
-            ✅ 確認儲存
+            <Check size={14} /> 確認儲存
           </button>
           <button
             onClick={onCancel}
-            className="text-gray-500 px-4 py-2 rounded-lg text-sm hover:bg-white transition-colors"
+            className="text-gray-500 px-4 py-2 rounded-full text-sm hover:bg-white transition-colors"
           >
             取消
           </button>

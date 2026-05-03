@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import LoadingSpinner from '../LoadingSpinner'
+import { Sparkles } from 'lucide-react'
 
 function todayISO() {
   return new Date().toISOString().split('T')[0]
@@ -57,9 +58,9 @@ export default function MeetingForm({ onSubmit, loading }) {
         <button
           type="submit"
           disabled={!notes.trim()}
-          className="bg-pink-500 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-pink-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+          className="flex items-center gap-2 bg-pink-500 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-pink-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
         >
-          ✨ Save
+          <Sparkles size={14} /> Save
         </button>
       )}
     </form>
