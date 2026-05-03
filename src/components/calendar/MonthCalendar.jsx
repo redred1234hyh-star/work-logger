@@ -74,7 +74,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-px bg-gray-100 rounded-lg overflow-hidden">
+      <div className="grid grid-cols-7 gap-px bg-gray-100 rounded-lg">
         {Array.from({ length: firstDay }).map((_, i) => (
           <div key={`e${i}`} className="bg-white min-h-[64px]" />
         ))}
@@ -85,6 +85,9 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
           const hasEvents = deadlines.length + mtgs.length > 0
           const isToday = ds === todayStr
           const isDragOver = dragOver === ds
+          const totalRows = Math.ceil((daysInMonth + firstDay) / 7)
+          const rowIndex = Math.floor((i + firstDay) / 7)
+          const popoverAbove = rowIndex >= totalRows - 2
 
           return (
             <div
@@ -127,7 +130,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
 
               {popover === ds && (
                 <div
-                  className="absolute top-full left-0 z-20 bg-white border border-pink-100 rounded-xl shadow-xl p-3 w-72 space-y-2 text-xs max-h-72 overflow-y-auto"
+                  className={`absolute ${popoverAbove ? 'bottom-full mb-1' : 'top-full mt-1'} left-0 z-20 bg-white border border-pink-100 rounded-xl shadow-xl p-3 w-72 space-y-2 text-xs max-h-72 overflow-y-auto`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className="font-heading font-semibold text-pink-700">{ds}</p>
