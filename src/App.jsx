@@ -18,6 +18,11 @@ export default function App() {
       .catch(() => {})
   }, [])
 
+  const deleteMeeting = useCallback(async (meeting_id) => {
+    await sheetsApi.deleteMeeting({ meeting_id })
+    setMeetings((prev) => prev.filter((m) => m.meeting_id !== meeting_id))
+  }, [])
+
   useEffect(() => { loadMeetings() }, [loadMeetings])
 
   const onSaved = useCallback(async () => {
@@ -33,7 +38,7 @@ export default function App() {
   const pages = {
     meeting: <MeetingInput onSaved={onSaved} />,
     tasks: <TaskList tasks={tasks} loading={loading} error={error} updateTask={updateTask} deleteTask={deleteTask} reload={reloadAll} />,
-    calendar: <CalendarPage tasks={tasks} meetings={meetings} loading={loading} reload={reloadAll} updateTask={updateTask} />,
+    calendar: <CalendarPage tasks={tasks} meetings={meetings} loading={loading} reload={reloadAll} updateTask={updateTask} deleteTask={deleteTask} deleteMeeting={deleteMeeting} />,
     archive: <MeetingArchive />,
   }
 

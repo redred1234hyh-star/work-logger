@@ -19,13 +19,14 @@ const fmtDate = (v) => {
   try { return new Date(v).toISOString().split('T')[0] } catch { return '' }
 }
 
-export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTask }) {
+export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTask, onDeleteTask, onDeleteMeeting }) {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
   const [popover, setPopover] = useState(null)
   const [dragOver, setDragOver] = useState(null)
   const [editingTask, setEditingTask] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null)
 
   const todayStr = now.toISOString().split('T')[0]
   const daysInMonth = getDaysInMonth(year, month)
@@ -59,7 +60,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 select-none" onClick={() => { setPopover(null); setEditingTask(null) }}>
+    <div className="bg-white rounded-xl border border-gray-200 p-4 select-none" onClick={() => { setPopover(null); setEditingTask(null); setConfirmDelete(null) }}>
       <div className="flex items-center justify-between mb-4">
         <button onClick={prev} className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full text-gray-500">‹</button>
         <span className="font-semibold text-gray-800">{year}年 {MONTHS[month]}</span>
@@ -119,17 +120,40 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className="font-semibold text-gray-700">{ds}</p>
-                  {mtgs.map((m, idx) => (
-                    <div key={idx} className="bg-purple-50 rounded-lg p-2">
-                      <p className="font-medium text-purple-700">📋 {m.meeting_name || '會議'}</p>
-                    </div>
-                  ))}
+                  {mtgs.map((m, idx) => {
+                    const mid = m.meeting_id
+                    const isConfirming = confirmDelete?.type === 'meeting' && confirmDelete.id === mid
+                    return (
+                      <div key={idx} className="bg-purple-50 rounded-lg p-2 flex items-center justify-between gap-1">
+                        <p className="font-medium text-purple-700 flex-1">📋 {m.meeting_name || '會議'}</p>
+                        {isConfirming ? (
+                          <span className="flex items-center gap-1 shrink-0">
+                            <button onClick={() => { onDeleteMeeting?.(mid); setConfirmDelete(null) }} className="text-[10px] text-red-500 hover:text-red-700 font-medium">確認</button>
+                            <button onClick={() => setConfirmDelete(null)} className="text-[10px] text-gray-400 hover:text-gray-600">取消</button>
+                          </span>
+                        ) : (
+                          <button onClick={() => setConfirmDelete({ type: 'meeting', id: mid })} className="text-gray-300 hover:text-red-400 shrink-0 text-sm">🗑</button>
+                        )}
+                      </div>
+                    )
+                  })}
                   {deadlines.map((t, idx) => {
                     const brand = getBrand(t.brand)
                     const isEditing = editingTask?.task_id === t.task_id
+                    const isConfirming = confirmDelete?.type === 'task' && confirmDelete.id === t.task_id
                     return (
                       <div key={idx} className={`rounded-lg p-2 ${brand.bg}`}>
-                        <p className={`font-semibold text-[10px] ${brand.text}`}>{brand.label} deadline</p>
+                        <div className="flex items-center justify-between gap-1">
+                          <p className={`font-semibold text-[10px] ${brand.text}`}>{brand.label} deadline</p>
+                          {isConfirming ? (
+                            <span className="flex items-center gap-1 shrink-0">
+                              <button onClick={() => { onDeleteTask?.(t.task_id); setConfirmDelete(null) }} className="text-[10px] text-red-500 hover:text-red-700 font-medium">確認</button>
+                              <button onClick={() => setConfirmDelete(null)} className="text-[10px] text-gray-400 hover:text-gray-600">取消</button>
+                            </span>
+                          ) : (
+                            <button onClick={() => setConfirmDelete({ type: 'task', id: t.task_id })} className="text-gray-300 hover:text-red-400 shrink-0 text-sm">🗑</button>
+                          )}
+                        </div>
                         {isEditing ? (
                           <div className="flex items-center gap-1 mt-1">
                             <input
@@ -149,7 +173,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                           <div className="flex items-start justify-between gap-1 mt-0.5">
                             <p className="text-gray-700 flex-1">{t.content}</p>
                             <button
-                              onClick={() => setEditingTask({ task_id: t.task_id, content: t.content })}
+                              onClick={() => { setConfirmDelete(null); setEditingTask({ task_id: t.task_id, content: t.content }) }}
                               className="text-gray-300 hover:text-indigo-500 transition-colors shrink-0"
                             >✏️</button>
                           </div>

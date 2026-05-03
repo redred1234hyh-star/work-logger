@@ -33,7 +33,7 @@ function PendingCard({ task }) {
   )
 }
 
-export default function CalendarPage({ tasks, meetings, loading, reload, updateTask }) {
+export default function CalendarPage({ tasks, meetings, loading, reload, updateTask, deleteTask, deleteMeeting }) {
   const [view, setView] = useState(() => window.innerWidth < 768 ? 'timeline' : 'month')
 
   const pendingTasks = tasks.filter((t) => !t.deadline || t.deadline === '')
@@ -67,7 +67,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
       {loading && <LoadingSpinner text="載入中..." />}
       {!loading && (
         <>
-          {view === 'month' && <MonthCalendar tasks={tasks} meetings={meetings} onDropTask={handleDropTask} onUpdateTask={updateTask} />}
+          {view === 'month' && <MonthCalendar tasks={tasks} meetings={meetings} onDropTask={handleDropTask} onUpdateTask={updateTask} onDeleteTask={deleteTask} onDeleteMeeting={deleteMeeting} />}
           {view === 'timeline' && <Timeline tasks={tasks} meetings={meetings} />}
 
           {pendingTasks.length > 0 && (

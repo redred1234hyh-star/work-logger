@@ -13,6 +13,7 @@ function doPost(e) {
     else if (data.action === 'updateTask') result = updateTask(data)
     else if (data.action === 'getMeetings') result = getMeetings()
     else if (data.action === 'deleteTask') result = deleteTask(data)
+    else if (data.action === 'deleteMeeting') result = deleteMeeting(data)
     else result = { error: 'Unknown action' }
 
     return ContentService
@@ -96,6 +97,20 @@ function deleteTask({ task_id }) {
   const idCol = headers.indexOf('task_id')
   for (let i = 1; i < rows.length; i++) {
     if (rows[i][idCol] === task_id) {
+      sheet.deleteRow(i + 1)
+      return { deleted: true }
+    }
+  }
+  return { deleted: false }
+}
+
+function deleteMeeting({ meeting_id }) {
+  const sheet = SS.getSheetByName(MEETINGS_SHEET)
+  const rows = sheet.getDataRange().getValues()
+  const headers = rows[0]
+  const idCol = headers.indexOf('meeting_id')
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][idCol] === meeting_id) {
       sheet.deleteRow(i + 1)
       return { deleted: true }
     }
