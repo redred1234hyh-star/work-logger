@@ -116,8 +116,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                         e.dataTransfer.setData('task_id', t.task_id)
                         e.dataTransfer.effectAllowed = 'move'
                       }}
-                      onClick={(e) => { e.stopPropagation(); setPopover(popover === ds ? null : ds) }}
-                      onMouseDown={(e) => { if (e.button === 0) { e.stopPropagation(); setPopover(popover === ds ? null : ds) } }}
+                      onMouseUp={(e) => { if (e.button === 0) { e.stopPropagation(); setPopover(popover === ds ? null : ds) } }}
                       className={`text-[10px] rounded px-1 truncate cursor-grab active:cursor-grabbing ${brand.bg} ${brand.text}`}
                     >
                       {brand.shortcode} - {t.content}

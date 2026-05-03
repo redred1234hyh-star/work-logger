@@ -46,7 +46,10 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
     .sort((a, b) => (a.deadline ?? '9999') > (b.deadline ?? '9999') ? 1 : -1)
 
   const handleDropTask = async (task_id, dateStr) => {
-    await updateTask(task_id, { deadline: dateStr })
+    const task = tasks.find((t) => t.task_id === task_id)
+    const updates = { deadline: dateStr }
+    if (task?.status === '已確定') updates.status = '待開始'
+    await updateTask(task_id, updates)
   }
 
   const handleDropToConfirmed = (e) => {
