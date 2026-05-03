@@ -10,7 +10,7 @@ const TABS = [
 export default function TopNav({ activeTab, onTabChange }) {
   return (
     <nav className="bg-white/80 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-10 shadow-[0_1px_8px_rgba(244,114,182,0.08)]">
-      <div className="flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex justify-center overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
         {TABS.map(({ id, label, Icon }) => (
           <button
             key={id}
