@@ -31,7 +31,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
     const ds = dateStr(d)
     return {
       deadlines: tasks.filter((t) => t.deadline === ds),
-      meetingTasks: tasks.filter((t) => t.meeting_date?.startsWith(ds) && t.deadline !== ds),
+      meetingTasks: tasks.filter((t) => t.meeting_date?.startsWith(ds) && t.deadline && t.deadline !== ds),
       mtgs: (meetings ?? []).filter((m) => m.date === ds),
     }
   }
@@ -76,8 +76,8 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
             <div
               key={d}
               onClick={(e) => { e.stopPropagation(); if (hasEvents) setPopover(popover === ds ? null : ds) }}
-              onDragOver={(e) => { e.preventDefault(); setDragOver(ds) }}
-              onDragLeave={() => setDragOver(null)}
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(ds) }}
+              onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDragOver(null) }}
               onDrop={(e) => handleDrop(e, ds)}
               className={`bg-white min-h-[64px] p-1 relative transition-colors
                 ${hasEvents ? 'cursor-pointer hover:bg-gray-50' : ''}
@@ -111,7 +111,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask }) {
 
               {popover === ds && (
                 <div
-                  className="absolute top-full left-0 z-20 bg-white border border-gray-200 rounded-xl shadow-xl p-3 w-64 space-y-2 text-xs"
+                  className="absolute top-full left-0 z-20 bg-white border border-gray-200 rounded-xl shadow-xl p-3 w-64 space-y-2 text-xs max-h-72 overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className="font-semibold text-gray-700">{ds}</p>
