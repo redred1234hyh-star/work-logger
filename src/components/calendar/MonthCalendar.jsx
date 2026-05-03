@@ -107,7 +107,16 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                 {deadlines.map((t, idx) => {
                   const brand = getBrand(t.brand)
                   return (
-                    <div key={idx} className={`text-[10px] rounded px-1 truncate ${brand.bg} ${brand.text}`}>
+                    <div
+                      key={idx}
+                      draggable
+                      onDragStart={(e) => {
+                        e.stopPropagation()
+                        e.dataTransfer.setData('task_id', t.task_id)
+                        e.dataTransfer.effectAllowed = 'move'
+                      }}
+                      className={`text-[10px] rounded px-1 truncate cursor-grab active:cursor-grabbing ${brand.bg} ${brand.text}`}
+                    >
                       {brand.shortcode} - {t.content}
                     </div>
                   )
