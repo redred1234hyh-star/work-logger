@@ -1,19 +1,39 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import TopNav from './components/TopNav'
 import MeetingInput from './pages/MeetingInput'
 import TaskList from './pages/TaskList'
 import CalendarPage from './pages/CalendarPage'
 import MeetingArchive from './pages/MeetingArchive'
 import { useTasks } from './hooks/useTasks'
+import { sheetsApi } from './api/sheets'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('meeting')
   const { tasks, loading, error, updateTask, reload } = useTasks()
+  const [meetings, setMeetings] = useState([])
+
+  const loadMeetings = useCallback(async () => {
+    sheetsApi.getMeetings()
+      .then(({ meetings: data }) => setMeetings(data ?? []))
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => { loadMeetings() }, [loadMeetings])
+
+  const onSaved = useCallback(async () => {
+    await reload()
+    loadMeetings()
+  }, [reload, loadMeetings])
+
+  const reloadAll = useCallback(() => {
+    reload()
+    loadMeetings()
+  }, [reload, loadMeetings])
 
   const pages = {
-    meeting: <MeetingInput onSaved={reload} />,
-    tasks: <TaskList tasks={tasks} loading={loading} error={error} updateTask={updateTask} reload={reload} />,
-    calendar: <CalendarPage tasks={tasks} loading={loading} reload={reload} />,
+    meeting: <MeetingInput onSaved={onSaved} />,
+    tasks: <TaskList tasks={tasks} loading={loading} error={error} updateTask={updateTask} reload={reloadAll} />,
+    calendar: <CalendarPage tasks={tasks} meetings={meetings} loading={loading} reload={reloadAll} />,
     archive: <MeetingArchive />,
   }
 

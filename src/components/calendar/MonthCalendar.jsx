@@ -30,6 +30,7 @@ export default function MonthCalendar({ tasks, meetings }) {
     const ds = dateStr(d)
     return {
       deadlines: tasks.filter((t) => t.deadline === ds),
+      meetingTasks: tasks.filter((t) => t.meeting_date?.startsWith(ds) && t.deadline !== ds),
       mtgs: (meetings ?? []).filter((m) => m.date === ds),
     }
   }
@@ -58,8 +59,8 @@ export default function MonthCalendar({ tasks, meetings }) {
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const d = i + 1
           const ds = dateStr(d)
-          const { deadlines, mtgs } = getEvents(d)
-          const hasEvents = deadlines.length + mtgs.length > 0
+          const { deadlines, meetingTasks, mtgs } = getEvents(d)
+          const hasEvents = deadlines.length + meetingTasks.length + mtgs.length > 0
           const isToday = ds === todayStr
 
           return (
@@ -79,6 +80,14 @@ export default function MonthCalendar({ tasks, meetings }) {
                   const brand = getBrand(t.brand)
                   return (
                     <div key={idx} className={`text-[10px] rounded px-1 truncate ${brand.bg} ${brand.text}`}>
+                      ⏰ {t.content}
+                    </div>
+                  )
+                })}
+                {meetingTasks.map((t, idx) => {
+                  const brand = getBrand(t.brand)
+                  return (
+                    <div key={idx} className={`text-[10px] rounded px-1 truncate opacity-70 ${brand.bg} ${brand.text}`}>
                       {t.content}
                     </div>
                   )
@@ -97,6 +106,16 @@ export default function MonthCalendar({ tasks, meetings }) {
                     </div>
                   ))}
                   {deadlines.map((t, idx) => {
+                    const brand = getBrand(t.brand)
+                    return (
+                      <div key={idx} className={`rounded-lg p-2 ${brand.bg}`}>
+                        <p className={`font-semibold ${brand.text}`}>⏰ {brand.label} deadline</p>
+                        <p className="text-gray-700 mt-0.5">{t.content}</p>
+                        {t.future_direction && <p className="text-gray-400 mt-0.5">→ {t.future_direction}</p>}
+                      </div>
+                    )
+                  })}
+                  {meetingTasks.map((t, idx) => {
                     const brand = getBrand(t.brand)
                     return (
                       <div key={idx} className={`rounded-lg p-2 ${brand.bg}`}>

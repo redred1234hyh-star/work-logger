@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { sheetsApi } from '../api/sheets'
+import { useState } from 'react'
 import MonthCalendar from '../components/calendar/MonthCalendar'
 import Timeline from '../components/calendar/Timeline'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -9,15 +8,8 @@ const VIEWS = [
   { id: 'timeline', label: '📋 時間線' },
 ]
 
-export default function CalendarPage({ tasks, loading, reload }) {
-  const [meetings, setMeetings] = useState([])
+export default function CalendarPage({ tasks, meetings, loading, reload }) {
   const [view, setView] = useState(() => window.innerWidth < 768 ? 'timeline' : 'month')
-
-  useEffect(() => {
-    sheetsApi.getMeetings()
-      .then(({ meetings: data }) => setMeetings(data ?? []))
-      .catch(() => {})
-  }, [])
 
   return (
     <div className="space-y-4 py-4">
