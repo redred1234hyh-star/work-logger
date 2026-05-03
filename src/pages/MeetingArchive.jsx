@@ -18,7 +18,7 @@ export default function MeetingArchive() {
 
   return (
     <div className="space-y-4 py-4">
-      <h1 className="text-lg font-semibold text-gray-800">📁 會議記錄</h1>
+      <h1 className="text-lg font-heading font-semibold text-gray-800">📁 會議記錄</h1>
 
       {loading && <LoadingSpinner text="載入會議記錄..." />}
       {!loading && meetings.length === 0 && (

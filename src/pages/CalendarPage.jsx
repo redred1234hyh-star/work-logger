@@ -66,7 +66,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
     <div className="space-y-4 py-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-semibold text-gray-800">📅 Calendar</h1>
+          <h1 className="text-lg font-heading font-semibold text-gray-800">📅 Calendar</h1>
           <button onClick={reload} disabled={loading} className="text-xs text-gray-400 hover:text-pink-400 disabled:opacity-40 transition-colors">↺ 更新</button>
         </div>
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1">

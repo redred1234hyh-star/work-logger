@@ -32,7 +32,7 @@ export default function MeetingInput({ onSaved }) {
 
   return (
     <div className="space-y-6 py-4">
-      <h1 className="text-lg font-semibold text-gray-800">🎤 開會記錄</h1>
+      <h1 className="text-lg font-heading font-semibold text-gray-800">🎤 開會記錄</h1>
 
       {!parsedTasks ? (
         <MeetingForm onSubmit={parseNotes} loading={parsing} />
