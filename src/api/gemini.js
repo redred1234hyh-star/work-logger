@@ -28,6 +28,7 @@ export async function parseMeetingNotes(rawNotes) {
     }),
   })
   const data = await res.json()
+  if (data.error) throw new Error(data.error.message ?? 'Gemini API error')
   return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '[]'
 }
 

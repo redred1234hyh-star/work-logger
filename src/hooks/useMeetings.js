@@ -17,8 +17,8 @@ export function useMeetings() {
       const tasks = parseGeminiResponse(rawText, date)
       setParsedTasks(tasks)
       setMeetingMeta({ date, meeting_name, raw_notes })
-    } catch {
-      setError('AI 解析失敗，請重試')
+    } catch (e) {
+      setError(`AI 解析失敗：${e.message ?? '請重試'}`)
     } finally {
       setParsing(false)
     }

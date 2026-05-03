@@ -11,7 +11,7 @@ const VIEWS = [
 ]
 
 export default function CalendarPage() {
-  const { tasks, loading } = useTasks()
+  const { tasks, loading, reload } = useTasks()
   const [meetings, setMeetings] = useState([])
   const [view, setView] = useState(() => window.innerWidth < 768 ? 'timeline' : 'month')
 
@@ -24,7 +24,10 @@ export default function CalendarPage() {
   return (
     <div className="space-y-4 py-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="text-lg font-semibold text-gray-800">📅 Calendar</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-lg font-semibold text-gray-800">📅 Calendar</h1>
+          <button onClick={reload} disabled={loading} className="text-xs text-gray-400 hover:text-indigo-500 disabled:opacity-40 transition-colors">↺ 更新</button>
+        </div>
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
           {VIEWS.map((v) => (
             <button
