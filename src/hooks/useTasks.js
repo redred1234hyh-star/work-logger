@@ -38,15 +38,15 @@ export function useTasks() {
   useEffect(() => { loadTasks() }, [loadTasks])
 
   const updateTask = useCallback(async (task_id, updates) => {
-    await sheetsApi.updateTask({ task_id, ...updates })
     setTasks((prev) =>
       prev.map((t) => (t.task_id === task_id ? { ...t, ...updates } : t))
     )
+    sheetsApi.updateTask({ task_id, ...updates }).catch(() => {})
   }, [])
 
   const deleteTask = useCallback(async (task_id) => {
-    await sheetsApi.deleteTask({ task_id })
     setTasks((prev) => prev.filter((t) => t.task_id !== task_id))
+    sheetsApi.deleteTask({ task_id }).catch(() => {})
   }, [])
 
   return { tasks, loading, error, reload: loadTasks, updateTask, deleteTask }
