@@ -39,7 +39,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
   const getEvents = (d) => {
     const ds = dateStr(d)
     return {
-      deadlines: tasks.filter((t) => t.deadline === ds),
+      deadlines: tasks.filter((t) => t.deadline === ds && t.status !== '已確定'),
       mtgs: (meetings ?? []).filter((m) => fmtDate(m.date) === ds),
     }
   }
