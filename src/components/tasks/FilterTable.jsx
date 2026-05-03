@@ -4,12 +4,13 @@ import StatusSelect from './StatusSelect'
 import TaskEditModal from './TaskEditModal'
 import { BRANDS } from '../../config/brands'
 
-export default function FilterTable({ tasks, onUpdateTask }) {
+export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
   const [activeBrand, setActiveBrand] = useState('All')
   const [sortKey, setSortKey] = useState('deadline')
   const [sortAsc, setSortAsc] = useState(true)
   const [editingTask, setEditingTask] = useState(null)
   const [editingDeadline, setEditingDeadline] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null)
 
   const filtered = tasks
     .filter((t) => activeBrand === 'All' || t.brand === activeBrand)
@@ -29,6 +30,15 @@ export default function FilterTable({ tasks, onUpdateTask }) {
       {label}{sortKey === col && <span>{sortAsc ? ' ↑' : ' ↓'}</span>}
     </button>
   )
+
+  const handleDelete = (task_id) => {
+    if (confirmDelete === task_id) {
+      onDeleteTask?.(task_id)
+      setConfirmDelete(null)
+    } else {
+      setConfirmDelete(task_id)
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -55,11 +65,12 @@ export default function FilterTable({ tasks, onUpdateTask }) {
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <table className="w-full text-sm min-w-[640px]">
+        <table className="w-full text-sm min-w-[780px]">
           <thead className="bg-gray-50 text-gray-500 text-xs">
             <tr>
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="brand" label="品牌" /></th>
               <th className="px-3 py-2 text-left font-medium">內容</th>
+              <th className="px-3 py-2 text-left font-medium">後續方向</th>
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="meeting_date" label="會議日期" /></th>
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="deadline" label="Deadline" /></th>
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="status" label="狀態" /></th>
@@ -69,18 +80,20 @@ export default function FilterTable({ tasks, onUpdateTask }) {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {filtered.length === 0 && (
-              <tr><td colSpan={7} className="px-3 py-8 text-center text-gray-400 text-sm">暫無記錄</td></tr>
+              <tr><td colSpan={8} className="px-3 py-8 text-center text-gray-400 text-sm">暫無記錄</td></tr>
             )}
             {filtered.map((task) => (
               <tr key={task.task_id} className="hover:bg-gray-50">
                 <td className="px-3 py-2.5"><BrandTag brandId={task.brand} /></td>
-                <td className="px-3 py-2.5 text-gray-700 max-w-xs">
+                <td className="px-3 py-2.5 text-gray-700 max-w-[200px]">
                   <div className="text-sm">{task.content}</div>
-                  {task.future_direction && (
-                    <div className="text-xs text-gray-400 mt-0.5">→ {task.future_direction}</div>
-                  )}
                 </td>
-                <td className="px-3 py-2.5 text-xs text-gray-500">{task.meeting_date}</td>
+                <td className="px-3 py-2.5 text-xs text-gray-500 max-w-[160px]">
+                  {task.future_direction || <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">
+                  {task.meeting_date?.toString().split('T')[0] || task.meeting_date}
+                </td>
                 <td className="px-3 py-2.5 text-xs">
                   {editingDeadline === task.task_id ? (
                     <input
@@ -110,13 +123,25 @@ export default function FilterTable({ tasks, onUpdateTask }) {
                   {task.remark || <span className="text-gray-300">—</span>}
                 </td>
                 <td className="px-3 py-2.5">
-                  <button
-                    onClick={() => setEditingTask(task)}
-                    className="text-gray-300 hover:text-indigo-500 transition-colors text-base"
-                    title="編輯"
-                  >
-                    ✏️
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setEditingTask(task)}
+                      className="text-gray-300 hover:text-indigo-500 transition-colors text-base"
+                      title="編輯"
+                    >✏️</button>
+                    {confirmDelete === task.task_id ? (
+                      <span className="flex items-center gap-1">
+                        <button onClick={() => handleDelete(task.task_id)} className="text-[10px] text-red-500 hover:text-red-700 font-medium">確認</button>
+                        <button onClick={() => setConfirmDelete(null)} className="text-[10px] text-gray-400 hover:text-gray-600">取消</button>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleDelete(task.task_id)}
+                        className="text-gray-300 hover:text-red-400 transition-colors text-sm"
+                        title="刪除"
+                      >🗑</button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

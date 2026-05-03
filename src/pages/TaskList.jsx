@@ -10,7 +10,7 @@ const VIEWS = [
   { id: 'kanban', label: '📌 Kanban' },
 ]
 
-export default function TaskList({ tasks, loading, error, updateTask, reload }) {
+export default function TaskList({ tasks, loading, error, updateTask, deleteTask, reload }) {
   const [view, setView] = useState('table')
 
   return (
@@ -39,7 +39,7 @@ export default function TaskList({ tasks, loading, error, updateTask, reload }) 
       {error && <p className="text-red-500 text-sm">{error}</p>}
       {!loading && !error && (
         <>
-          {view === 'table' && <FilterTable tasks={tasks} onUpdateTask={updateTask} />}
+          {view === 'table' && <FilterTable tasks={tasks} onUpdateTask={updateTask} onDeleteTask={deleteTask} />}
           {view === 'groups' && <BrandGroups tasks={tasks} onUpdateTask={updateTask} />}
           {view === 'kanban' && <KanbanBoard tasks={tasks} onUpdateTask={updateTask} />}
         </>

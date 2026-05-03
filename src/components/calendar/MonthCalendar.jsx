@@ -13,11 +13,12 @@ function getFirstDayMon(year, month) {
 const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
 const DAYS = ['一','二','三','四','五','六','日']
 
-export default function MonthCalendar({ tasks, meetings }) {
+export default function MonthCalendar({ tasks, meetings, onDropTask }) {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
   const [popover, setPopover] = useState(null)
+  const [dragOver, setDragOver] = useState(null)
 
   const todayStr = now.toISOString().split('T')[0]
   const daysInMonth = getDaysInMonth(year, month)
@@ -37,6 +38,13 @@ export default function MonthCalendar({ tasks, meetings }) {
 
   const prev = () => month === 0 ? (setYear(y => y - 1), setMonth(11)) : setMonth(m => m - 1)
   const next = () => month === 11 ? (setYear(y => y + 1), setMonth(0)) : setMonth(m => m + 1)
+
+  const handleDrop = (e, ds) => {
+    e.preventDefault()
+    setDragOver(null)
+    const task_id = e.dataTransfer.getData('task_id')
+    if (task_id && onDropTask) onDropTask(task_id, ds)
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 select-none" onClick={() => setPopover(null)}>
@@ -62,12 +70,19 @@ export default function MonthCalendar({ tasks, meetings }) {
           const { deadlines, meetingTasks, mtgs } = getEvents(d)
           const hasEvents = deadlines.length + meetingTasks.length + mtgs.length > 0
           const isToday = ds === todayStr
+          const isDragOver = dragOver === ds
 
           return (
             <div
               key={d}
               onClick={(e) => { e.stopPropagation(); if (hasEvents) setPopover(popover === ds ? null : ds) }}
-              className={`bg-white min-h-[64px] p-1 relative ${hasEvents ? 'cursor-pointer hover:bg-gray-50' : ''} ${isToday ? 'ring-1 ring-inset ring-indigo-400' : ''}`}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(ds) }}
+              onDragLeave={() => setDragOver(null)}
+              onDrop={(e) => handleDrop(e, ds)}
+              className={`bg-white min-h-[64px] p-1 relative transition-colors
+                ${hasEvents ? 'cursor-pointer hover:bg-gray-50' : ''}
+                ${isToday ? 'ring-1 ring-inset ring-indigo-400' : ''}
+                ${isDragOver ? 'bg-indigo-50 ring-2 ring-inset ring-indigo-400' : ''}`}
             >
               <span className={`text-xs font-medium ${isToday ? 'text-indigo-600' : 'text-gray-700'}`}>{d}</span>
               <div className="space-y-0.5 mt-0.5">

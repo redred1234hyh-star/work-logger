@@ -27,5 +27,10 @@ export function useTasks() {
     )
   }, [])
 
-  return { tasks, loading, error, reload: loadTasks, updateTask }
+  const deleteTask = useCallback(async (task_id) => {
+    await sheetsApi.deleteTask({ task_id })
+    setTasks((prev) => prev.filter((t) => t.task_id !== task_id))
+  }, [])
+
+  return { tasks, loading, error, reload: loadTasks, updateTask, deleteTask }
 }

@@ -14,4 +14,5 @@ export const sheetsApi = {
   getTasks: (filters) => post({ action: 'getTasks', filters }),
   updateTask: (data) => post({ action: 'updateTask', ...data }),
   getMeetings: () => post({ action: 'getMeetings' }),
+  deleteTask: (data) => post({ action: 'deleteTask', ...data }),
 }

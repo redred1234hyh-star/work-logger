@@ -9,7 +9,7 @@ import { sheetsApi } from './api/sheets'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('meeting')
-  const { tasks, loading, error, updateTask, reload } = useTasks()
+  const { tasks, loading, error, updateTask, deleteTask, reload } = useTasks()
   const [meetings, setMeetings] = useState([])
 
   const loadMeetings = useCallback(async () => {
@@ -32,8 +32,8 @@ export default function App() {
 
   const pages = {
     meeting: <MeetingInput onSaved={onSaved} />,
-    tasks: <TaskList tasks={tasks} loading={loading} error={error} updateTask={updateTask} reload={reloadAll} />,
-    calendar: <CalendarPage tasks={tasks} meetings={meetings} loading={loading} reload={reloadAll} />,
+    tasks: <TaskList tasks={tasks} loading={loading} error={error} updateTask={updateTask} deleteTask={deleteTask} reload={reloadAll} />,
+    calendar: <CalendarPage tasks={tasks} meetings={meetings} loading={loading} reload={reloadAll} updateTask={updateTask} />,
     archive: <MeetingArchive />,
   }
 
