@@ -1,6 +1,6 @@
 import { BRANDS } from '../config/brands.js'
 
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
+const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
 
 const BRAND_LIST = BRANDS
   .filter((b) => b.id !== 'General')
