@@ -63,7 +63,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
     e.preventDefault()
     setDragOverPending(false)
     const task_id = e.dataTransfer.getData('task_id')
-    if (task_id) updateTask(task_id, { status: '待開始' })
+    if (task_id) updateTask(task_id, { status: '待開始', deadline: '' })
   }
 
   return (
