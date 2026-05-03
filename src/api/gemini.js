@@ -44,6 +44,7 @@ Return a JSON array. Each item must have:
 - "content": the action item or discussion point (keep the same language as the input)
 - "future_direction": next steps mentioned (same language as input), or ""
 - "deadline": ISO date string YYYY-MM-DD. Use the week reference above for relative dates (e.g. 下週五). If no year specified use ${CURRENT_YEAR}. Or null if no date mentioned.
+- "status": "已確定" if the note explicitly confirms this will happen (keywords: confirm, confirmed, 確定, 確認, 決定); otherwise "待開始"
 Return ONLY a valid JSON array, no markdown, no explanation.`
 }
 
@@ -82,7 +83,7 @@ export function parseGeminiResponse(rawText, meetingDate) {
       future_direction: item.future_direction ?? '',
       deadline: fixYear(item.deadline ?? null),
       meeting_date: meetingDate,
-      status: '待開始',
+      status: item.status === '已確定' ? '已確定' : '待開始',
       remark: '',
     }))
   } catch {
