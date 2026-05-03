@@ -9,25 +9,50 @@ const BRAND_LIST = BRANDS
 
 const CURRENT_YEAR = new Date().getFullYear()
 
-const SYSTEM_PROMPT = `You are a meeting notes parser. Extract action items from the meeting notes.
+function buildWeekRef() {
+  const today = new Date()
+  const todayDay = today.getDay()
+  const start = new Date(today)
+  if (todayDay === 0) {
+    start.setDate(today.getDate() + 1)
+  } else {
+    start.setDate(today.getDate() - (todayDay - 1))
+  }
+  const labels = ['一', '二', '三', '四', '五', '六', '日']
+  const fmt = (d) => d.toISOString().split('T')[0]
+  const weekNames = ['今週', '下週', '下下週']
+  return weekNames.map((name, w) =>
+    labels.map((lbl, d) => {
+      const date = new Date(start)
+      date.setDate(start.getDate() + w * 7 + d)
+      return `${name}${lbl}=${fmt(date)}`
+    }).join(', ')
+  ).join('\n')
+}
+
+function buildSystemPrompt() {
+  const today = new Date().toISOString().split('T')[0]
+  return `You are a meeting notes parser. Extract action items from the meeting notes.
 The brands and their shortcuts are:
 - ${BRAND_LIST}
 
-Today's date is ${new Date().toISOString().split('T')[0]}. Current year is ${CURRENT_YEAR}.
+Today is ${today} (year ${CURRENT_YEAR}). Week date reference (週一=Mon, 週日=Sun):
+${buildWeekRef()}
 
 Return a JSON array. Each item must have:
 - "brand": one of the exact brand names above (InLife, Minus Plus, Miris Spa, Miris Mama, Consguard, Multi Plus), or "General" if unclear
 - "content": the action item or discussion point (keep the same language as the input)
 - "future_direction": next steps mentioned (same language as input), or ""
-- "deadline": ISO date string YYYY-MM-DD if a date is mentioned. If no year is specified, always use ${CURRENT_YEAR}. Or null if no date mentioned.
+- "deadline": ISO date string YYYY-MM-DD. Use the week reference above for relative dates (e.g. 下週五). If no year specified use ${CURRENT_YEAR}. Or null if no date mentioned.
 Return ONLY a valid JSON array, no markdown, no explanation.`
+}
 
 export async function parseMeetingNotes(rawNotes) {
   const res = await fetch(ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nMeeting notes:\n${rawNotes}` }] }],
+      contents: [{ parts: [{ text: `${buildSystemPrompt()}\n\nMeeting notes:\n${rawNotes}` }] }],
       generationConfig: { responseMimeType: 'application/json' },
     }),
   })
