@@ -10,11 +10,16 @@ import { sheetsApi } from './api/sheets'
 export default function App() {
   const [activeTab, setActiveTab] = useState('meeting')
   const { tasks, loading, error, updateTask, deleteTask, reload } = useTasks()
-  const [meetings, setMeetings] = useState([])
+  const cachedMeetings = (() => { try { return JSON.parse(localStorage.getItem('wl_meetings_cache')) } catch { return null } })()
+  const [meetings, setMeetings] = useState(cachedMeetings ?? [])
 
   const loadMeetings = useCallback(async () => {
     sheetsApi.getMeetings()
-      .then(({ meetings: data }) => setMeetings(data ?? []))
+      .then(({ meetings: data }) => {
+        const list = data ?? []
+        setMeetings(list)
+        localStorage.setItem('wl_meetings_cache', JSON.stringify(list))
+      })
       .catch(() => {})
   }, [])
 

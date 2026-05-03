@@ -13,8 +13,11 @@ const normalizeDates = (t) => ({
   meeting_date: fmtDate(t.meeting_date),
 })
 
+const CACHE_KEY = 'wl_tasks_cache'
+
 export function useTasks() {
-  const [tasks, setTasks] = useState([])
+  const cached = (() => { try { return JSON.parse(localStorage.getItem(CACHE_KEY)) } catch { return null } })()
+  const [tasks, setTasks] = useState(cached ?? [])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -22,7 +25,9 @@ export function useTasks() {
     setLoading(true)
     try {
       const { tasks: data } = await sheetsApi.getTasks()
-      setTasks((data ?? []).map(normalizeDates))
+      const normalized = (data ?? []).map(normalizeDates)
+      setTasks(normalized)
+      localStorage.setItem(CACHE_KEY, JSON.stringify(normalized))
     } catch (e) {
       setError(e.message)
     } finally {
