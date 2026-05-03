@@ -3,7 +3,7 @@ import LoadingSpinner from '../LoadingSpinner'
 
 export default function ParsedResults({ tasks, meetingMeta, onConfirm, onCancel, saving }) {
   return (
-    <div className="border border-indigo-200 rounded-xl bg-indigo-50 p-4 space-y-3">
+    <div className="border border-pink-100 rounded-xl bg-pink-50 p-4 space-y-3">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h3 className="text-sm font-semibold text-indigo-800">
           ✨ AI 解析結果 — {tasks.length} 個項目
@@ -36,7 +36,7 @@ export default function ParsedResults({ tasks, meetingMeta, onConfirm, onCancel,
         <div className="flex gap-2 pt-1">
           <button
             onClick={onConfirm}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+            className="bg-pink-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition-colors"
           >
             ✅ 確認儲存
           </button>

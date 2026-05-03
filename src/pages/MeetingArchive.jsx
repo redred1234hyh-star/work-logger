@@ -31,7 +31,7 @@ export default function MeetingArchive() {
           const isExpanded = expanded === m.meeting_id
 
           return (
-            <div key={m.meeting_id} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div key={m.meeting_id} className="bg-white border border-pink-100 rounded-xl overflow-hidden">
               <button
                 onClick={() => setExpanded(isExpanded ? null : m.meeting_id)}
                 className="w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors"

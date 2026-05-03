@@ -36,7 +36,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
             <select
               value={form.brand}
               onChange={set('brand')}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-pink-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
             >
               {BRANDS.map((b) => (
                 <option key={b.id} value={b.id}>{b.label}</option>
@@ -50,7 +50,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
               value={form.content}
               onChange={set('content')}
               rows={3}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+              className="w-full border border-pink-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
             />
           </div>
 
@@ -60,7 +60,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
               type="text"
               value={form.future_direction}
               onChange={set('future_direction')}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-pink-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
             />
           </div>
 
@@ -71,7 +71,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
                 type="date"
                 value={form.meeting_date}
                 onChange={set('meeting_date')}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full border border-pink-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
               />
             </div>
             <div>
@@ -80,7 +80,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
                 type="date"
                 value={form.deadline}
                 onChange={set('deadline')}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full border border-pink-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
               />
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
             <select
               value={form.status}
               onChange={set('status')}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-pink-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
             >
               {STATUS_OPTIONS.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -104,7 +104,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
               type="text"
               value={form.remark}
               onChange={set('remark')}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-pink-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
             />
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 py-2.5 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+            className="flex-1 py-2.5 rounded-xl text-sm font-medium bg-pink-500 text-white hover:bg-pink-600 transition-colors"
           >
             儲存
           </button>

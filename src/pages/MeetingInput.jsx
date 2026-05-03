@@ -22,7 +22,7 @@ export default function MeetingInput({ onSaved }) {
         <p className="text-gray-700 font-medium">會議記錄已儲存！</p>
         <button
           onClick={() => setSaved(false)}
-          className="text-indigo-600 text-sm hover:underline"
+          className="text-pink-500 text-sm hover:underline"
         >
           記錄另一個會議
         </button>

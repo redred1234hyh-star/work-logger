@@ -7,7 +7,7 @@ const TABS = [
 
 export default function TopNav({ activeTab, onTabChange }) {
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+    <nav className="bg-white/80 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-10 shadow-[0_1px_8px_rgba(244,114,182,0.08)]">
       <div className="flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
         {TABS.map((tab) => (
           <button
@@ -15,8 +15,8 @@ export default function TopNav({ activeTab, onTabChange }) {
             onClick={() => onTabChange(tab.id)}
             className={`flex-shrink-0 px-5 py-3.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
               activeTab === tab.id
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                ? 'border-pink-400 text-pink-500'
+                : 'border-transparent text-gray-400 hover:text-pink-400'
             }`}
           >
             {tab.label}

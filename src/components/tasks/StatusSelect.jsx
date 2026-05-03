@@ -12,7 +12,7 @@ export default function StatusSelect({ value, onChange }) {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={`text-xs rounded px-2 py-1 border-0 font-medium cursor-pointer focus:ring-1 focus:ring-indigo-300 ${STYLE[value] ?? 'bg-gray-100'}`}
+      className={`text-xs rounded px-2 py-1 border-0 font-medium cursor-pointer focus:ring-1 focus:ring-pink-200 ${STYLE[value] ?? 'bg-gray-100'}`}
     >
       {STATUS_OPTIONS.map((s) => (
         <option key={s} value={s}>{s}</option>

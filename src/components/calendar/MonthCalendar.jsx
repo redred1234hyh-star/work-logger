@@ -94,10 +94,10 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
               onDrop={(e) => handleDrop(e, ds)}
               className={`bg-white min-h-[64px] p-1 relative transition-colors
                 ${hasEvents ? 'cursor-pointer hover:bg-gray-50' : ''}
-                ${isToday ? 'ring-1 ring-inset ring-indigo-400' : ''}
-                ${isDragOver ? 'bg-indigo-50 ring-2 ring-inset ring-indigo-400' : ''}`}
+                ${isToday ? 'ring-1 ring-inset ring-pink-300' : ''}
+                ${isDragOver ? 'bg-pink-50 ring-2 ring-inset ring-pink-300' : ''}`}
             >
-              <span className={`text-xs font-medium ${isToday ? 'text-indigo-600' : 'text-gray-700'}`}>{d}</span>
+              <span className={`text-xs font-medium ${isToday ? 'text-pink-500' : 'text-gray-700'}`}>{d}</span>
               <div className="space-y-0.5 mt-0.5">
                 {mtgs.map((m, idx) => (
                   <div key={idx} className="text-[10px] bg-purple-100 text-purple-700 rounded px-1 truncate">
@@ -125,7 +125,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
 
               {popover === ds && (
                 <div
-                  className="absolute top-full left-0 z-20 bg-white border border-gray-200 rounded-xl shadow-xl p-3 w-72 space-y-2 text-xs max-h-72 overflow-y-auto"
+                  className="absolute top-full left-0 z-20 bg-white border border-pink-100 rounded-xl shadow-xl p-3 w-72 space-y-2 text-xs max-h-72 overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className="font-semibold text-gray-700">{ds}</p>
@@ -167,7 +167,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                           <div className="flex items-center gap-1 mt-1">
                             <input
                               autoFocus
-                              className="flex-1 text-xs border border-gray-300 rounded px-1.5 py-0.5 bg-white text-gray-800 focus:outline-none focus:border-indigo-400"
+                              className="flex-1 text-xs border border-gray-300 rounded px-1.5 py-0.5 bg-white text-gray-800 focus:outline-none focus:border-pink-300"
                               value={editingTask.content}
                               onChange={(e) => setEditingTask((prev) => ({ ...prev, content: e.target.value }))}
                               onKeyDown={(e) => {
@@ -183,7 +183,7 @@ export default function MonthCalendar({ tasks, meetings, onDropTask, onUpdateTas
                             <p className="text-gray-700 flex-1">{t.content}</p>
                             <button
                               onClick={() => { setConfirmDelete(null); setEditingTask({ task_id: t.task_id, content: t.content }) }}
-                              className="text-gray-300 hover:text-indigo-500 transition-colors shrink-0"
+                              className="text-gray-300 hover:text-pink-400 transition-colors shrink-0"
                             >✏️</button>
                           </div>
                         )}

@@ -39,7 +39,7 @@ export default function BrandGroups({ tasks, onUpdateTask }) {
                         <StatusSelect value={task.status} onChange={(val) => onUpdateTask(task.task_id, { status: val })} />
                         <button
                           onClick={() => setEditingTask(task)}
-                          className="text-gray-300 hover:text-indigo-500 transition-colors"
+                          className="text-gray-300 hover:text-pink-400 transition-colors"
                           title="編輯"
                         >
                           ✏️

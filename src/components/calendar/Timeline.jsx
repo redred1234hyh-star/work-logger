@@ -41,7 +41,7 @@ export default function Timeline({ tasks, meetings }) {
           <div key={i}>
             {showDate && (
               <div className="flex items-center gap-2 pt-4 pb-1">
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${isToday ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-500'}`}>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${isToday ? 'bg-pink-50 text-pink-600' : 'bg-gray-100 text-gray-500'}`}>
                   {isToday ? '今日' : event.date}
                 </span>
                 <div className="flex-1 h-px bg-gray-100" />

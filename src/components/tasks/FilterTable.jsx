@@ -28,7 +28,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
   }
 
   const SortBtn = ({ col, label }) => (
-    <button onClick={() => toggleSort(col)} className="flex items-center gap-0.5 hover:text-indigo-600">
+    <button onClick={() => toggleSort(col)} className="flex items-center gap-0.5 hover:text-pink-500">
       {label}{sortKey === col && <span>{sortAsc ? ' ↑' : ' ↓'}</span>}
     </button>
   )
@@ -78,7 +78,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
       <div className="flex gap-2 flex-wrap">
         <button
           onClick={() => setActiveBrand('All')}
-          className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${activeBrand === 'All' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+          className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${activeBrand === 'All' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
         >
           全部 ({tasks.length})
         </button>
@@ -98,15 +98,15 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
       </div>
 
       {selected.size > 0 && (
-        <div className="flex items-center gap-3 flex-wrap bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2">
-          <span className="text-xs font-medium text-indigo-700">已選 {selected.size} 項</span>
+        <div className="flex items-center gap-3 flex-wrap bg-pink-50 border border-pink-100 rounded-lg px-3 py-2">
+          <span className="text-xs font-medium text-pink-600">已選 {selected.size} 項</span>
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-gray-500">改狀態：</span>
             {STATUS_OPTIONS.map((s) => (
               <button
                 key={s}
                 onClick={() => handleBulkStatus(s)}
-                className="text-xs px-2 py-0.5 rounded bg-white border border-gray-200 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+                className="text-xs px-2 py-0.5 rounded bg-white border border-gray-200 hover:border-pink-300 hover:text-pink-500 transition-colors"
               >
                 {s}
               </button>
@@ -127,7 +127,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <div className="overflow-x-auto rounded-xl border border-pink-100">
         <table className="w-full text-sm min-w-[820px]">
           <thead className="bg-gray-50 text-gray-500 text-xs">
             <tr>
@@ -136,7 +136,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                   type="checkbox"
                   checked={allSelected}
                   onChange={toggleAll}
-                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                  className="rounded border-gray-300 text-pink-500 focus:ring-pink-400 cursor-pointer"
                 />
               </th>
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="brand" label="品牌" /></th>
@@ -154,13 +154,13 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
               <tr><td colSpan={9} className="px-3 py-8 text-center text-gray-400 text-sm">暫無記錄</td></tr>
             )}
             {filtered.map((task) => (
-              <tr key={task.task_id} className={`hover:bg-gray-50 ${selected.has(task.task_id) ? 'bg-indigo-50/50' : ''}`}>
+              <tr key={task.task_id} className={`hover:bg-gray-50 ${selected.has(task.task_id) ? 'bg-pink-50/50' : ''}`}>
                 <td className="px-3 py-2.5 w-8">
                   <input
                     type="checkbox"
                     checked={selected.has(task.task_id)}
                     onChange={() => toggleOne(task.task_id)}
-                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="rounded border-gray-300 text-pink-500 focus:ring-pink-400 cursor-pointer"
                   />
                 </td>
                 <td className="px-3 py-2.5"><BrandTag brandId={task.brand} /></td>
@@ -179,7 +179,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                       type="date"
                       defaultValue={task.deadline || ''}
                       autoFocus
-                      className="border border-indigo-300 rounded px-1 py-0.5 text-xs focus:outline-none"
+                      className="border border-pink-200 rounded px-1 py-0.5 text-xs focus:outline-none"
                       onBlur={(e) => {
                         const val = e.target.value || null
                         if (val !== task.deadline) onUpdateTask(task.task_id, { deadline: val })
@@ -205,7 +205,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setEditingTask(task)}
-                      className="text-gray-300 hover:text-indigo-500 transition-colors text-base"
+                      className="text-gray-300 hover:text-pink-400 transition-colors text-base"
                       title="編輯"
                     >✏️</button>
                     {confirmDelete === task.task_id ? (

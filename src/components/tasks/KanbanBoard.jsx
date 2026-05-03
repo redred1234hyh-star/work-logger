@@ -13,7 +13,7 @@ const COLUMN_STYLE = {
 function Column({ status, tasks }) {
   const { setNodeRef, isOver } = useDroppable({ id: status })
   return (
-    <div className={`flex-1 min-w-[200px] rounded-xl border-2 ${COLUMN_STYLE[status]} ${isOver ? 'ring-2 ring-indigo-400 ring-offset-1' : ''} transition-all`}>
+    <div className={`flex-1 min-w-[200px] rounded-xl border-2 ${COLUMN_STYLE[status]} ${isOver ? 'ring-2 ring-pink-300 ring-offset-1' : ''} transition-all`}>
       <div className="px-3 py-2.5 border-b border-inherit">
         <span className="text-xs font-semibold text-gray-600">{status}</span>
         <span className="ml-2 text-xs text-gray-400">{tasks.length}</span>

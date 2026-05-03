@@ -67,7 +67,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-semibold text-gray-800">📅 Calendar</h1>
-          <button onClick={reload} disabled={loading} className="text-xs text-gray-400 hover:text-indigo-500 disabled:opacity-40 transition-colors">↺ 更新</button>
+          <button onClick={reload} disabled={loading} className="text-xs text-gray-400 hover:text-pink-400 disabled:opacity-40 transition-colors">↺ 更新</button>
         </div>
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
           {VIEWS.map((v) => (
@@ -75,7 +75,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
               key={v.id}
               onClick={() => setView(v.id)}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                view === v.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                view === v.id ? 'bg-white text-pink-500 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               {v.label}

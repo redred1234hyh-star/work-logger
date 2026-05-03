@@ -48,7 +48,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <TopNav activeTab={activeTab} onTabChange={setActiveTab} />
       <main className="max-w-5xl mx-auto px-4 py-2">
         {pages[activeTab]}

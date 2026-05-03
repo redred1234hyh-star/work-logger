@@ -25,7 +25,7 @@ export default function MeetingForm({ onSubmit, loading }) {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
         <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
@@ -35,7 +35,7 @@ export default function MeetingForm({ onSubmit, loading }) {
             value={meetingName}
             onChange={(e) => setMeetingName(e.target.value)}
             placeholder="例：品牌策略月會"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
       </div>
@@ -47,7 +47,7 @@ export default function MeetingForm({ onSubmit, loading }) {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="例：InLife 下個月做中醫正骨推廣，五月底前出 social posts。Miris Spa 要新 banner，六月初交稿..."
           rows={9}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-pink-200"
         />
       </div>
 
@@ -57,7 +57,7 @@ export default function MeetingForm({ onSubmit, loading }) {
         <button
           type="submit"
           disabled={!notes.trim()}
-          className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="bg-pink-500 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-pink-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
         >
           ✨ Save
         </button>
