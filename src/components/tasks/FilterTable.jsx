@@ -2,7 +2,7 @@ import { useState } from 'react'
 import BrandTag from '../BrandTag'
 import StatusSelect from './StatusSelect'
 import TaskEditModal from './TaskEditModal'
-import { BRANDS } from '../../config/brands'
+import { BRANDS, STATUS_OPTIONS } from '../../config/brands'
 
 export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
   const [activeBrand, setActiveBrand] = useState('All')
@@ -11,6 +11,8 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
   const [editingTask, setEditingTask] = useState(null)
   const [editingDeadline, setEditingDeadline] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(null)
+  const [selected, setSelected] = useState(new Set())
+  const [bulkConfirmDelete, setBulkConfirmDelete] = useState(false)
 
   const filtered = tasks
     .filter((t) => activeBrand === 'All' || t.brand === activeBrand)
@@ -35,8 +37,39 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
     if (confirmDelete === task_id) {
       onDeleteTask?.(task_id)
       setConfirmDelete(null)
+      setSelected((prev) => { const s = new Set(prev); s.delete(task_id); return s })
     } else {
       setConfirmDelete(task_id)
+    }
+  }
+
+  const allFilteredIds = filtered.map((t) => t.task_id)
+  const allSelected = allFilteredIds.length > 0 && allFilteredIds.every((id) => selected.has(id))
+  const toggleAll = () => {
+    if (allSelected) {
+      setSelected((prev) => { const s = new Set(prev); allFilteredIds.forEach((id) => s.delete(id)); return s })
+    } else {
+      setSelected((prev) => { const s = new Set(prev); allFilteredIds.forEach((id) => s.add(id)); return s })
+    }
+  }
+  const toggleOne = (id) => {
+    setSelected((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s })
+  }
+
+  const selectedTasks = tasks.filter((t) => selected.has(t.task_id))
+
+  const handleBulkStatus = (status) => {
+    selectedTasks.forEach((t) => onUpdateTask(t.task_id, { status }))
+    setSelected(new Set())
+  }
+
+  const handleBulkDelete = () => {
+    if (bulkConfirmDelete) {
+      selectedTasks.forEach((t) => onDeleteTask?.(t.task_id))
+      setSelected(new Set())
+      setBulkConfirmDelete(false)
+    } else {
+      setBulkConfirmDelete(true)
     }
   }
 
@@ -64,10 +97,48 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
         })}
       </div>
 
+      {selected.size > 0 && (
+        <div className="flex items-center gap-3 flex-wrap bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2">
+          <span className="text-xs font-medium text-indigo-700">已選 {selected.size} 項</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-500">改狀態：</span>
+            {STATUS_OPTIONS.map((s) => (
+              <button
+                key={s}
+                onClick={() => handleBulkStatus(s)}
+                className="text-xs px-2 py-0.5 rounded bg-white border border-gray-200 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1.5 ml-auto">
+            {bulkConfirmDelete ? (
+              <>
+                <span className="text-xs text-red-500">確認刪除 {selected.size} 項？</span>
+                <button onClick={handleBulkDelete} className="text-xs text-red-600 font-medium hover:text-red-700">確認</button>
+                <button onClick={() => setBulkConfirmDelete(false)} className="text-xs text-gray-400 hover:text-gray-600">取消</button>
+              </>
+            ) : (
+              <button onClick={handleBulkDelete} className="text-xs text-red-400 hover:text-red-600 transition-colors">🗑 刪除所選</button>
+            )}
+            <button onClick={() => { setSelected(new Set()); setBulkConfirmDelete(false) }} className="text-xs text-gray-400 hover:text-gray-600 ml-1">✕ 取消選擇</button>
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <table className="w-full text-sm min-w-[780px]">
+        <table className="w-full text-sm min-w-[820px]">
           <thead className="bg-gray-50 text-gray-500 text-xs">
             <tr>
+              <th className="px-3 py-2 w-8">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleAll}
+                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                />
+              </th>
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="brand" label="品牌" /></th>
               <th className="px-3 py-2 text-left font-medium">內容</th>
               <th className="px-3 py-2 text-left font-medium">後續方向</th>
@@ -80,10 +151,18 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {filtered.length === 0 && (
-              <tr><td colSpan={8} className="px-3 py-8 text-center text-gray-400 text-sm">暫無記錄</td></tr>
+              <tr><td colSpan={9} className="px-3 py-8 text-center text-gray-400 text-sm">暫無記錄</td></tr>
             )}
             {filtered.map((task) => (
-              <tr key={task.task_id} className="hover:bg-gray-50">
+              <tr key={task.task_id} className={`hover:bg-gray-50 ${selected.has(task.task_id) ? 'bg-indigo-50/50' : ''}`}>
+                <td className="px-3 py-2.5 w-8">
+                  <input
+                    type="checkbox"
+                    checked={selected.has(task.task_id)}
+                    onChange={() => toggleOne(task.task_id)}
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                  />
+                </td>
                 <td className="px-3 py-2.5"><BrandTag brandId={task.brand} /></td>
                 <td className="px-3 py-2.5 text-gray-700 max-w-[200px]">
                   <div className="text-sm">{task.content}</div>
