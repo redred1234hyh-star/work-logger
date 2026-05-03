@@ -1,11 +1,18 @@
-import { BRAND_NAMES } from '../config/brands.js'
+import { BRANDS } from '../config/brands.js'
 
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
 
+const BRAND_LIST = BRANDS
+  .filter((b) => b.id !== 'General')
+  .map((b) => b.keywords?.length ? `${b.label} (shortcuts: ${b.keywords.join(', ')})` : b.label)
+  .join('\n- ')
+
 const SYSTEM_PROMPT = `You are a meeting notes parser. Extract action items from the meeting notes.
-The brands are: ${BRAND_NAMES.join(', ')}.
+The brands and their shortcuts are:
+- ${BRAND_LIST}
+
 Return a JSON array. Each item must have:
-- "brand": one of the brand names above, or "General" if unclear
+- "brand": one of the exact brand names above (InLife, Minus Plus, Miris Spa, Miris Mama, Consguard, Multi Plus), or "General" if unclear
 - "content": the action item or discussion point (keep the same language as the input)
 - "future_direction": next steps mentioned (same language as input), or ""
 - "deadline": ISO date string YYYY-MM-DD if a date is mentioned, or null

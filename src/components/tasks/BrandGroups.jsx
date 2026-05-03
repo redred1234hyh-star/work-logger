@@ -1,16 +1,11 @@
 import { useState } from 'react'
 import { BRANDS } from '../../config/brands'
 import StatusSelect from './StatusSelect'
+import TaskEditModal from './TaskEditModal'
 
 export default function BrandGroups({ tasks, onUpdateTask }) {
   const [collapsed, setCollapsed] = useState({})
-  const [editingRemark, setEditingRemark] = useState(null)
-  const [remarkDraft, setRemarkDraft] = useState('')
-
-  const saveRemark = (task_id) => {
-    onUpdateTask(task_id, { remark: remarkDraft })
-    setEditingRemark(null)
-  }
+  const [editingTask, setEditingTask] = useState(null)
 
   return (
     <div className="space-y-3">
@@ -27,7 +22,7 @@ export default function BrandGroups({ tasks, onUpdateTask }) {
             >
               <div className="flex items-center gap-2">
                 <span className={`font-semibold text-sm ${brand.text}`}>{brand.label}</span>
-                <span className={`text-xs px-1.5 py-0.5 rounded-full bg-white bg-opacity-70 ${brand.text}`}>
+                <span className={`text-xs px-1.5 py-0.5 rounded-full bg-white bg-opacity-70 ${brand.countText ?? brand.text}`}>
                   {brandTasks.length}
                 </span>
               </div>
@@ -40,7 +35,16 @@ export default function BrandGroups({ tasks, onUpdateTask }) {
                   <div key={task.task_id} className="px-4 py-3 space-y-1.5">
                     <div className="flex items-start justify-between gap-3">
                       <p className="text-sm text-gray-800 flex-1 leading-relaxed">{task.content}</p>
-                      <StatusSelect value={task.status} onChange={(val) => onUpdateTask(task.task_id, { status: val })} />
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <StatusSelect value={task.status} onChange={(val) => onUpdateTask(task.task_id, { status: val })} />
+                        <button
+                          onClick={() => setEditingTask(task)}
+                          className="text-gray-300 hover:text-indigo-500 transition-colors"
+                          title="編輯"
+                        >
+                          ✏️
+                        </button>
+                      </div>
                     </div>
                     {task.future_direction && (
                       <p className="text-xs text-gray-400">→ {task.future_direction}</p>
@@ -52,24 +56,8 @@ export default function BrandGroups({ tasks, onUpdateTask }) {
                           截止 {task.deadline}
                         </span>
                       )}
-                      {editingRemark === task.task_id ? (
-                        <div className="flex gap-1 ml-auto">
-                          <input
-                            autoFocus
-                            value={remarkDraft}
-                            onChange={(e) => setRemarkDraft(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === 'Enter') saveRemark(task.task_id); if (e.key === 'Escape') setEditingRemark(null) }}
-                            className="border border-gray-300 rounded px-1.5 py-0.5 text-xs w-36 focus:outline-none"
-                          />
-                          <button onClick={() => saveRemark(task.task_id)} className="text-indigo-600">✓</button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => { setEditingRemark(task.task_id); setRemarkDraft(task.remark ?? '') }}
-                          className="ml-auto text-gray-300 hover:text-gray-500 transition-colors"
-                        >
-                          {task.remark || '+ remark'}
-                        </button>
+                      {task.remark && (
+                        <span className="ml-auto text-gray-400">{task.remark}</span>
                       )}
                     </div>
                   </div>
@@ -79,6 +67,14 @@ export default function BrandGroups({ tasks, onUpdateTask }) {
           </div>
         )
       })}
+
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          onSave={onUpdateTask}
+          onClose={() => setEditingTask(null)}
+        />
+      )}
     </div>
   )
 }

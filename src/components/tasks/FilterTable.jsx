@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import BrandTag from '../BrandTag'
 import StatusSelect from './StatusSelect'
+import TaskEditModal from './TaskEditModal'
 import { BRANDS } from '../../config/brands'
 
 export default function FilterTable({ tasks, onUpdateTask }) {
   const [activeBrand, setActiveBrand] = useState('All')
   const [sortKey, setSortKey] = useState('deadline')
   const [sortAsc, setSortAsc] = useState(true)
-  const [editingRemark, setEditingRemark] = useState(null)
-  const [remarkDraft, setRemarkDraft] = useState('')
+  const [editingTask, setEditingTask] = useState(null)
 
   const filtered = tasks
     .filter((t) => activeBrand === 'All' || t.brand === activeBrand)
@@ -21,11 +21,6 @@ export default function FilterTable({ tasks, onUpdateTask }) {
   const toggleSort = (key) => {
     if (sortKey === key) setSortAsc((p) => !p)
     else { setSortKey(key); setSortAsc(true) }
-  }
-
-  const saveRemark = (task_id) => {
-    onUpdateTask(task_id, { remark: remarkDraft })
-    setEditingRemark(null)
   }
 
   const SortBtn = ({ col, label }) => (
@@ -43,7 +38,7 @@ export default function FilterTable({ tasks, onUpdateTask }) {
         >
           全部 ({tasks.length})
         </button>
-        {BRANDS.filter((b) => b.id !== 'General').map((b) => {
+        {BRANDS.map((b) => {
           const count = tasks.filter((t) => t.brand === b.id).length
           if (count === 0) return null
           return (
@@ -68,11 +63,12 @@ export default function FilterTable({ tasks, onUpdateTask }) {
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="deadline" label="Deadline" /></th>
               <th className="px-3 py-2 text-left font-medium"><SortBtn col="status" label="狀態" /></th>
               <th className="px-3 py-2 text-left font-medium">Remark</th>
+              <th className="px-3 py-2" />
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {filtered.length === 0 && (
-              <tr><td colSpan={6} className="px-3 py-8 text-center text-gray-400 text-sm">暫無記錄</td></tr>
+              <tr><td colSpan={7} className="px-3 py-8 text-center text-gray-400 text-sm">暫無記錄</td></tr>
             )}
             {filtered.map((task) => (
               <tr key={task.task_id} className="hover:bg-gray-50">
@@ -92,32 +88,31 @@ export default function FilterTable({ tasks, onUpdateTask }) {
                 <td className="px-3 py-2.5">
                   <StatusSelect value={task.status} onChange={(val) => onUpdateTask(task.task_id, { status: val })} />
                 </td>
-                <td className="px-3 py-2.5 text-xs">
-                  {editingRemark === task.task_id ? (
-                    <div className="flex gap-1">
-                      <input
-                        autoFocus
-                        value={remarkDraft}
-                        onChange={(e) => setRemarkDraft(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === 'Enter') saveRemark(task.task_id); if (e.key === 'Escape') setEditingRemark(null) }}
-                        className="border border-gray-300 rounded px-1 py-0.5 text-xs w-28 focus:outline-none focus:ring-1 focus:ring-indigo-300"
-                      />
-                      <button onClick={() => saveRemark(task.task_id)} className="text-indigo-600">✓</button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => { setEditingRemark(task.task_id); setRemarkDraft(task.remark ?? '') }}
-                      className="text-left min-w-[4rem] text-gray-400 hover:text-gray-700"
-                    >
-                      {task.remark || <span className="text-gray-300">+ 備注</span>}
-                    </button>
-                  )}
+                <td className="px-3 py-2.5 text-xs text-gray-500">
+                  {task.remark || <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-3 py-2.5">
+                  <button
+                    onClick={() => setEditingTask(task)}
+                    className="text-gray-300 hover:text-indigo-500 transition-colors text-base"
+                    title="編輯"
+                  >
+                    ✏️
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          onSave={onUpdateTask}
+          onClose={() => setEditingTask(null)}
+        />
+      )}
     </div>
   )
 }

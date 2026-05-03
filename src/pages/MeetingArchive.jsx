@@ -2,11 +2,7 @@ import { useState, useEffect } from 'react'
 import { sheetsApi } from '../api/sheets'
 import LoadingSpinner from '../components/LoadingSpinner'
 import BrandTag from '../components/BrandTag'
-import { BRAND_NAMES } from '../config/brands'
-
-function extractBrands(raw_notes) {
-  return BRAND_NAMES.filter((b) => (raw_notes ?? '').includes(b))
-}
+import { extractBrandFromText } from '../config/brands'
 
 export default function MeetingArchive() {
   const [meetings, setMeetings] = useState([])
@@ -31,7 +27,7 @@ export default function MeetingArchive() {
 
       <div className="space-y-2">
         {meetings.map((m) => {
-          const brands = extractBrands(m.raw_notes)
+          const brands = extractBrandFromText(m.raw_notes)
           const isExpanded = expanded === m.meeting_id
 
           return (

@@ -1,4 +1,4 @@
-const SS = SpreadsheetApp.getActiveSpreadsheet()
+const SS = SpreadsheetApp.openById('1O3euX3-oFpBo8inmRtbGSjeuZWRlVnDZXZAL8XeAEdc')
 const MEETINGS_SHEET = 'raw_meetings'
 const TASKS_SHEET = 'tasks'
 
@@ -69,17 +69,19 @@ function getTasks({ filters } = {}) {
   return { tasks }
 }
 
-function updateTask({ task_id, status, remark }) {
+function updateTask(data) {
+  const { task_id, action, ...fields } = data
   const sheet = SS.getSheetByName(TASKS_SHEET)
   const rows = sheet.getDataRange().getValues()
   const headers = rows[0]
   const idCol = headers.indexOf('task_id')
-  const statusCol = headers.indexOf('status')
-  const remarkCol = headers.indexOf('remark')
+
   for (let i = 1; i < rows.length; i++) {
     if (rows[i][idCol] === task_id) {
-      if (status !== undefined) sheet.getRange(i + 1, statusCol + 1).setValue(status)
-      if (remark !== undefined) sheet.getRange(i + 1, remarkCol + 1).setValue(remark)
+      Object.entries(fields).forEach(([key, value]) => {
+        const col = headers.indexOf(key)
+        if (col >= 0) sheet.getRange(i + 1, col + 1).setValue(value)
+      })
       return { updated: true }
     }
   }
