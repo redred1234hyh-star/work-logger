@@ -4,14 +4,14 @@ import Timeline from '../components/calendar/Timeline'
 import LoadingSpinner from '../components/LoadingSpinner'
 import BrandTag from '../components/BrandTag'
 import { getBrand } from '../config/brands'
-import { CalendarDays, AlignLeft, RefreshCw } from 'lucide-react'
+import { CalendarDays, AlignLeft, RefreshCw, Pencil, Check, X } from 'lucide-react'
 
 const VIEWS = [
   { id: 'month', label: '月曆', Icon: CalendarDays },
   { id: 'timeline', label: '時間線', Icon: AlignLeft },
 ]
 
-function PendingCard({ task }) {
+function PendingCard({ task, isEditing, editContent, onEditStart, onEditChange, onEditSave, onEditCancel }) {
   const brand = getBrand(task.brand)
   const handleDragStart = (e) => {
     e.dataTransfer.setData('task_id', task.task_id)
@@ -20,16 +20,37 @@ function PendingCard({ task }) {
 
   return (
     <div
-      draggable
+      draggable={!isEditing}
       onDragStart={handleDragStart}
-      className={`rounded-lg p-2.5 cursor-grab active:cursor-grabbing border ${brand.border} ${brand.bg} select-none`}
+      className={`rounded-lg p-2.5 border ${brand.border} ${brand.bg} select-none ${isEditing ? '' : 'cursor-grab active:cursor-grabbing'}`}
     >
-      <div className="flex items-center gap-1.5 mb-1">
+      <div className="flex items-center justify-between mb-1">
         <span className={`text-[10px] font-semibold ${brand.text}`}>{brand.label}</span>
+        {!isEditing && (
+          <button onClick={(e) => { e.stopPropagation(); onEditStart() }} className="text-gray-300 hover:text-pink-400 transition-colors p-0.5">
+            <Pencil size={11} />
+          </button>
+        )}
       </div>
-      <p className="text-xs text-gray-700 leading-relaxed">{task.content}</p>
-      {task.future_direction && (
-        <p className="text-[10px] text-gray-400 mt-0.5">→ {task.future_direction}</p>
+      {isEditing ? (
+        <div className="flex items-center gap-1 mt-1">
+          <input
+            autoFocus
+            className="flex-1 text-xs border border-gray-300 rounded px-1.5 py-0.5 bg-white text-gray-800 focus:outline-none focus:border-pink-300"
+            value={editContent}
+            onChange={(e) => onEditChange(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') onEditSave(); if (e.key === 'Escape') onEditCancel() }}
+          />
+          <button onClick={onEditSave} className="text-green-600 hover:text-green-700 p-0.5"><Check size={13} /></button>
+          <button onClick={onEditCancel} className="text-gray-400 hover:text-gray-600 p-0.5"><X size={13} /></button>
+        </div>
+      ) : (
+        <>
+          <p className="text-xs text-gray-700 leading-relaxed">{task.content}</p>
+          {task.future_direction && (
+            <p className="text-[10px] text-gray-400 mt-0.5">→ {task.future_direction}</p>
+          )}
+        </>
       )}
     </div>
   )
@@ -39,6 +60,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
   const [view, setView] = useState(() => window.innerWidth < 768 ? 'timeline' : 'month')
   const [dragOverConfirmed, setDragOverConfirmed] = useState(false)
   const [dragOverPending, setDragOverPending] = useState(false)
+  const [editingTask, setEditingTask] = useState(null) // { task_id, content }
 
   const pendingTasks = tasks.filter((t) => (!t.deadline || t.deadline === '') && t.status !== '已確定')
   const confirmedTasks = tasks
@@ -64,6 +86,13 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
     setDragOverPending(false)
     const task_id = e.dataTransfer.getData('task_id')
     if (task_id) updateTask(task_id, { status: '待開始', deadline: '' })
+  }
+
+  const startEdit = (task) => setEditingTask({ task_id: task.task_id, content: task.content })
+  const saveEdit = (task_id) => {
+    if (!editingTask || editingTask.task_id !== task_id) return
+    updateTask(task_id, { content: editingTask.content })
+    setEditingTask(null)
   }
 
   return (
@@ -111,25 +140,51 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
               {confirmedTasks.length === 0 && (
                 <p className="text-xs text-gray-300 text-center py-3">拖入任務以標記為已確定</p>
               )}
-              {confirmedTasks.map((task) => (
-                <div
-                  key={task.task_id}
-                  draggable
-                  onDragStart={(e) => { e.dataTransfer.setData('task_id', task.task_id); e.dataTransfer.effectAllowed = 'move' }}
-                  className="flex items-start gap-3 px-4 py-2.5 cursor-grab active:cursor-grabbing hover:bg-gray-50"
-                >
-                  <BrandTag brandId={task.brand} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-700">{task.content}</p>
-                    {task.future_direction && (
-                      <p className="text-xs text-gray-400 mt-0.5">→ {task.future_direction}</p>
-                    )}
+              {confirmedTasks.map((task) => {
+                const isEditing = editingTask?.task_id === task.task_id
+                return (
+                  <div
+                    key={task.task_id}
+                    draggable={!isEditing}
+                    onDragStart={(e) => { e.dataTransfer.setData('task_id', task.task_id); e.dataTransfer.effectAllowed = 'move' }}
+                    className={`flex items-start gap-3 px-4 py-2.5 hover:bg-gray-50 ${isEditing ? '' : 'cursor-grab active:cursor-grabbing'}`}
+                  >
+                    <BrandTag brandId={task.brand} />
+                    <div className="flex-1 min-w-0">
+                      {isEditing ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            autoFocus
+                            className="flex-1 text-xs border border-gray-300 rounded px-1.5 py-0.5 bg-white text-gray-800 focus:outline-none focus:border-pink-300"
+                            value={editingTask.content}
+                            onChange={(e) => setEditingTask((prev) => ({ ...prev, content: e.target.value }))}
+                            onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(task.task_id); if (e.key === 'Escape') setEditingTask(null) }}
+                          />
+                          <button onClick={() => saveEdit(task.task_id)} className="text-green-600 hover:text-green-700 p-0.5"><Check size={13} /></button>
+                          <button onClick={() => setEditingTask(null)} className="text-gray-400 hover:text-gray-600 p-0.5"><X size={13} /></button>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-sm text-gray-700">{task.content}</p>
+                          {task.future_direction && (
+                            <p className="text-xs text-gray-400 mt-0.5">→ {task.future_direction}</p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {task.deadline && !isEditing && (
+                        <span className="text-xs text-emerald-600 font-medium">{task.deadline}</span>
+                      )}
+                      {!isEditing && (
+                        <button onClick={() => startEdit(task)} className="text-gray-300 hover:text-pink-400 transition-colors p-0.5">
+                          <Pencil size={13} />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  {task.deadline && (
-                    <span className="text-xs text-emerald-600 font-medium shrink-0">{task.deadline}</span>
-                  )}
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 
@@ -146,7 +201,16 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
             {pendingTasks.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                 {pendingTasks.map((task) => (
-                  <PendingCard key={task.task_id} task={task} />
+                  <PendingCard
+                    key={task.task_id}
+                    task={task}
+                    isEditing={editingTask?.task_id === task.task_id}
+                    editContent={editingTask?.task_id === task.task_id ? editingTask.content : ''}
+                    onEditStart={() => startEdit(task)}
+                    onEditChange={(val) => setEditingTask((prev) => ({ ...prev, content: val }))}
+                    onEditSave={() => saveEdit(task.task_id)}
+                    onEditCancel={() => setEditingTask(null)}
+                  />
                 ))}
               </div>
             )}
