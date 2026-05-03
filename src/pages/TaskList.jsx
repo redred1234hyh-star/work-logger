@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useTasks } from '../hooks/useTasks'
 import FilterTable from '../components/tasks/FilterTable'
 import BrandGroups from '../components/tasks/BrandGroups'
 import KanbanBoard from '../components/tasks/KanbanBoard'
@@ -11,8 +10,7 @@ const VIEWS = [
   { id: 'kanban', label: '📌 Kanban' },
 ]
 
-export default function TaskList() {
-  const { tasks, loading, error, updateTask, reload } = useTasks()
+export default function TaskList({ tasks, loading, error, updateTask, reload }) {
   const [view, setView] = useState('table')
 
   return (

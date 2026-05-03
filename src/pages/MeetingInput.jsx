@@ -3,13 +3,16 @@ import MeetingForm from '../components/meeting/MeetingForm'
 import ParsedResults from '../components/meeting/ParsedResults'
 import { useMeetings } from '../hooks/useMeetings'
 
-export default function MeetingInput() {
+export default function MeetingInput({ onSaved }) {
   const { parsing, saving, parsedTasks, meetingMeta, error, parseNotes, confirmSave, cancelParsed } = useMeetings()
   const [saved, setSaved] = useState(false)
 
   const handleConfirm = async () => {
     const result = await confirmSave()
-    if (result?.success) setSaved(true)
+    if (result?.success) {
+      setSaved(true)
+      onSaved?.()
+    }
   }
 
   if (saved) {

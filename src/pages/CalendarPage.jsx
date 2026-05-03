@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useTasks } from '../hooks/useTasks'
 import { sheetsApi } from '../api/sheets'
 import MonthCalendar from '../components/calendar/MonthCalendar'
 import Timeline from '../components/calendar/Timeline'
@@ -10,8 +9,7 @@ const VIEWS = [
   { id: 'timeline', label: '📋 時間線' },
 ]
 
-export default function CalendarPage() {
-  const { tasks, loading, reload } = useTasks()
+export default function CalendarPage({ tasks, loading, reload }) {
   const [meetings, setMeetings] = useState([])
   const [view, setView] = useState(() => window.innerWidth < 768 ? 'timeline' : 'month')
 

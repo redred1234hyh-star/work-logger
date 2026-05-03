@@ -9,6 +9,7 @@ export default function FilterTable({ tasks, onUpdateTask }) {
   const [sortKey, setSortKey] = useState('deadline')
   const [sortAsc, setSortAsc] = useState(true)
   const [editingTask, setEditingTask] = useState(null)
+  const [editingDeadline, setEditingDeadline] = useState(null)
 
   const filtered = tasks
     .filter((t) => activeBrand === 'All' || t.brand === activeBrand)
@@ -81,9 +82,26 @@ export default function FilterTable({ tasks, onUpdateTask }) {
                 </td>
                 <td className="px-3 py-2.5 text-xs text-gray-500">{task.meeting_date}</td>
                 <td className="px-3 py-2.5 text-xs">
-                  {task.deadline
-                    ? <span className={new Date(task.deadline) < new Date() ? 'text-red-500 font-medium' : 'text-gray-600'}>{task.deadline}</span>
-                    : <span className="text-gray-300">—</span>}
+                  {editingDeadline === task.task_id ? (
+                    <input
+                      type="date"
+                      defaultValue={task.deadline || ''}
+                      autoFocus
+                      className="border border-indigo-300 rounded px-1 py-0.5 text-xs focus:outline-none"
+                      onBlur={(e) => {
+                        const val = e.target.value || null
+                        if (val !== task.deadline) onUpdateTask(task.task_id, { deadline: val })
+                        setEditingDeadline(null)
+                      }}
+                    />
+                  ) : (
+                    <span
+                      onClick={() => setEditingDeadline(task.task_id)}
+                      className={`cursor-pointer hover:underline decoration-dotted ${task.deadline && new Date(task.deadline) < new Date() ? 'text-red-500 font-medium' : task.deadline ? 'text-gray-600' : 'text-gray-300'}`}
+                    >
+                      {task.deadline || '—'}
+                    </span>
+                  )}
                 </td>
                 <td className="px-3 py-2.5">
                   <StatusSelect value={task.status} onChange={(val) => onUpdateTask(task.task_id, { status: val })} />

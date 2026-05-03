@@ -4,14 +4,16 @@ import MeetingInput from './pages/MeetingInput'
 import TaskList from './pages/TaskList'
 import CalendarPage from './pages/CalendarPage'
 import MeetingArchive from './pages/MeetingArchive'
+import { useTasks } from './hooks/useTasks'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('meeting')
+  const { tasks, loading, error, updateTask, reload } = useTasks()
 
   const pages = {
-    meeting: <MeetingInput />,
-    tasks: <TaskList />,
-    calendar: <CalendarPage />,
+    meeting: <MeetingInput onSaved={reload} />,
+    tasks: <TaskList tasks={tasks} loading={loading} error={error} updateTask={updateTask} reload={reload} />,
+    calendar: <CalendarPage tasks={tasks} loading={loading} reload={reload} />,
     archive: <MeetingArchive />,
   }
 
