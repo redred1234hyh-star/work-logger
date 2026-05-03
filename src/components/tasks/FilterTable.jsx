@@ -206,7 +206,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setEditingTask(task)}
-                      className="text-gray-300 hover:text-pink-400 transition-colors p-1"
+                      className="text-gray-300 hover:text-pink-400 transition-colors p-2 min-h-[36px] min-w-[36px] flex items-center justify-center"
                       title="編輯"
                     ><Pencil size={13} /></button>
                     {confirmDelete === task.task_id ? (
@@ -217,7 +217,7 @@ export default function FilterTable({ tasks, onUpdateTask, onDeleteTask }) {
                     ) : (
                       <button
                         onClick={() => handleDelete(task.task_id)}
-                        className="text-gray-300 hover:text-red-400 transition-colors p-1"
+                        className="text-gray-300 hover:text-red-400 transition-colors p-2 min-h-[36px] min-w-[36px] flex items-center justify-center"
                         title="刪除"
                       ><Trash2 size={13} /></button>
                     )}

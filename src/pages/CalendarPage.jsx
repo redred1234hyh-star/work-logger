@@ -67,7 +67,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
     <div className="space-y-4 py-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-heading font-semibold text-gray-800">Calendar</h1>
+          <h1 className="text-lg font-heading font-semibold text-pink-800">Calendar</h1>
           <button onClick={reload} disabled={loading} className="text-gray-400 hover:text-pink-400 disabled:opacity-40 transition-colors">
             <RefreshCw size={14} />
           </button>
@@ -101,7 +101,7 @@ export default function CalendarPage({ tasks, meetings, loading, reload, updateT
             onDrop={handleDropToConfirmed}
           >
             <div className="flex items-center gap-2 mb-2 px-1">
-              <h2 className="text-sm font-semibold text-gray-700">本月確定事項</h2>
+              <h2 className="text-sm font-heading font-semibold text-pink-700">本月確定事項</h2>
               <span className="text-xs text-gray-400">({confirmedTasks.length}) 拖入標記已確定，拖出至待定區取消</span>
             </div>
             <div className={`bg-white rounded-xl border divide-y divide-emerald-50 min-h-[48px] ${dragOverConfirmed ? 'border-emerald-400' : 'border-emerald-200'}`}>

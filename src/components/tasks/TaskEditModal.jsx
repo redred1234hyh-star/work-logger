@@ -26,7 +26,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 className="text-sm font-semibold text-gray-800">編輯任務</h2>
+          <h2 className="text-sm font-semibold text-pink-800">編輯任務</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">×</button>
         </div>
 
