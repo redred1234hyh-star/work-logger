@@ -43,7 +43,7 @@ export default function MeetingArchive() {
                     </span>
                     {brands.map((b) => <BrandTag key={b} brandId={b} size="xs" />)}
                   </div>
-                  <p className="text-xs text-gray-400 mt-0.5">{m.date}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{typeof m.date === 'string' ? m.date.split('T')[0] : m.date}</p>
                   {!isExpanded && (
                     <p className="text-xs text-gray-500 mt-1 truncate">{m.raw_notes}</p>
                   )}

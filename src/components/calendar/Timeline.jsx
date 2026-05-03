@@ -3,9 +3,11 @@ import BrandTag from '../BrandTag'
 export default function Timeline({ tasks, meetings }) {
   const todayStr = new Date().toISOString().split('T')[0]
 
+  const fmtDate = (v) => { if (!v) return ''; if (typeof v === 'string') return v.split('T')[0]; try { return new Date(v).toISOString().split('T')[0] } catch { return '' } }
+
   const events = [
     ...(meetings ?? []).map((m) => ({
-      date: m.date,
+      date: fmtDate(m.date),
       type: 'meeting',
       label: m.meeting_name || '會議',
       brand: null,
